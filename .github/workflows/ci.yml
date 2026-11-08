@@ -1,0 +1,127 @@
+name: SchoolOS Enterprise CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-and-contracts:
+    name: Go Quality Gates & Invariants (21 Gates)
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4-alpine
+        env:
+          POSTGRES_DB: schoolos
+          POSTGRES_USER: schoolos_app
+          POSTGRES_PASSWORD: schoolos_app_secret
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go 1.23+
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.x'
+          cache: true
+
+      - name: Set up Python 3.11+
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+
+      - name: Verify PostgreSQL 16 PostGIS DDL Schema & RLS Policies
+        env:
+          PGPASSWORD: schoolos_app_secret
+        run: |
+          psql -h localhost -U schoolos_app -d schoolos -f docs/DATABASE_SCHEMA.sql
+          psql -h localhost -U schoolos_app -d schoolos -c "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';"
+
+      - name: Compile SchoolOS Binaries
+        run: |
+          mkdir -p bin
+          go build -o bin/schoolos-api services/api/*.go
+          go build -o bin/telemetry-daemon services/telemetry/main.go
+          go build -o bin/simulated_bus scripts/simulator/simulated_bus.go
+          go build -o bin/e2e-verifier scripts/e2e_verify.go
+          go build -o bin/system-walkthrough scripts/system_e2e_walkthrough.go
+          go build -o bin/benchmark-telemetry scripts/benchmark_telemetry.go
+
+      - name: Run Go Unit & Invariant Test Suites (with Race Detection)
+        run: |
+          go test -race -v ./pkg/... ./services/api
+
+      - name: Execute 21-Gate System Acceptance Verifier
+        run: |
+          ./bin/e2e-verifier
+
+      - name: Execute 12-Stage Master Cross-Client Walkthrough
+        run: |
+          ./bin/system-walkthrough
+
+      - name: Execute GT06 High-Throughput Telemetry Benchmark
+        run: |
+          ./bin/benchmark-telemetry
+
+      - name: Verify Disaster Recovery WAL Archival Snapshot
+        run: |
+          bash scripts/backup_wal.sh
+
+  web-portals:
+    name: Next.js 16 Web Management Portals
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20+
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: apps/web/package.json
+
+      - name: Install dependencies
+        working-directory: apps/web
+        run: npm ci
+
+      - name: Next.js Turbopack Production Build
+        working-directory: apps/web
+        run: npm run build
+
+      - name: Validate Generated Static Routes
+        working-directory: apps/web
+        run: |
+          test -d .next
+          echo "Verified Next.js .next production compilation"

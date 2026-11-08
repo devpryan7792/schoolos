@@ -1,0 +1,49 @@
+name: Bug Report
+description: File a reproducible bug report or invariant violation
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report. Please make sure you are testing on the latest commit.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Provide a clear and concise description of the bug.
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Exact steps or code snippet to reproduce the behavior.
+      placeholder: |
+        1. Run `...`
+        2. Call endpoint `...`
+        3. See error `...`
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen based on the system invariants?
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      options:
+        - Core API (services/api)
+        - GT06 Telemetry Gateway (services/telemetry)
+        - Web Management Portal (apps/web)
+        - Desktop Counter POS (apps/desktop)
+        - Database Schema & RLS (docs/DATABASE_SCHEMA.sql)
+        - OMR Vision Evaluator (pkg/omr)
+        - Double-Entry Ledger (pkg/models)
+        - Other
+    validations:
+      required: true

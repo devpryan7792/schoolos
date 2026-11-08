@@ -1,0 +1,115 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: schoolos-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: schoolos
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_dev_secret
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./deploy/postgres/01-init-role.sh:/docker-entrypoint-initdb.d/01-init-role.sh:ro
+      - ./docs/DATABASE_SCHEMA.sql:/docker-entrypoint-initdb.d/02-schema.sql:ro
+      - ./deploy/postgres/03-grant-permissions.sql:/docker-entrypoint-initdb.d/03-grant-permissions.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d schoolos"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - schoolos-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: schoolos-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - schoolos-net
+
+  minio:
+    image: minio/minio:latest
+    container_name: schoolos-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin_secret
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - schoolos-net
+
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    container_name: schoolos-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      PORT: "8080"
+      DATABASE_URL: "postgres://schoolos_app:schoolos_app_secret@postgres:5432/schoolos?sslmode=disable"
+      DATABASE_SUPERUSER_URL: "postgres://postgres:postgres_dev_secret@postgres:5432/schoolos?sslmode=disable"
+      REDIS_URL: "redis://redis:6379/0"
+      JWT_SECRET: "schoolos_dev_jwt_super_secret_signing_key_32bytes"
+    ports:
+      - "8080:8080"
+    networks:
+      - schoolos-net
+
+  telemetry:
+    build:
+      context: .
+      dockerfile: services/telemetry/Dockerfile
+    container_name: schoolos-telemetry
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      TCP_PORT: "5023"
+      DATABASE_URL: "postgres://schoolos_app:schoolos_app_secret@postgres:5432/schoolos?sslmode=disable"
+      REDIS_URL: "redis://redis:6379/0"
+    ports:
+      - "5023:5023"
+    networks:
+      - schoolos-net
+
+volumes:
+  pgdata:
+  redisdata:
+  miniodata:
+
+networks:
+  schoolos-net:
+    driver: bridge
