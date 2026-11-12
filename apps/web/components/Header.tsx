@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Bell, ChevronDown, User, Sparkles, Building2 } from 'lucide-react';
+import { Search, ChevronDown, Check, Building2, UserCircle2 } from 'lucide-react';
 
 interface HeaderProps {
   onOpenCommandPalette: () => void;
 }
 
 const mockSiblings = [
-  { id: 'student-01', name: 'Aarav Sharma', class: 'Class 5', section: 'A', admNo: 'DPS-2024-042', role: 'STUDENT' },
-  { id: 'student-02', name: 'Ananya Sharma', class: 'Class 2', section: 'B', admNo: 'DPS-2026-118', role: 'STUDENT' },
+  { id: 'student-01', name: 'Aarav Sharma', class: 'Class 5', section: 'A', admNo: 'DPS-2024-042', role: 'STUDENT', active: true },
+  { id: 'student-02', name: 'Ananya Sharma', class: 'Class 2', section: 'B', admNo: 'DPS-2026-118', role: 'STUDENT', active: false },
 ];
 
 export default function Header({ onOpenCommandPalette }: HeaderProps) {
@@ -17,95 +17,92 @@ export default function Header({ onOpenCommandPalette }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
-    <header className="h-16 border-b border-slate-200 bg-white px-6 flex items-center justify-between sticky top-0 z-30">
-      {/* Search trigger */}
-      <div className="flex items-center gap-4">
+    <header className="h-14 border-b border-hairline bg-canvas px-5 flex items-center justify-between sticky top-0 z-30 select-none">
+      {/* Search trigger (Personio Quick Bar) */}
+      <div className="flex items-center gap-3">
         <button
           onClick={onOpenCommandPalette}
-          className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-500 hover:border-slate-300 hover:text-slate-800 text-xs transition-colors w-72"
+          className="flex items-center gap-2.5 px-3 py-1.5 rounded-md border border-hairline bg-canvas-chrome text-ink-muted hover:border-hairline-strong hover:text-ink text-xs transition-all w-72 shadow-whisper"
         >
-          <Search className="w-3.5 h-3.5" />
-          <span className="flex-1 text-left">Search students, bus, fees...</span>
-          <kbd className="bg-white border border-slate-200 px-1.5 py-0.5 rounded text-[10px] font-mono text-slate-400 font-semibold shadow-xs">
-            Ctrl+K
+          <Search className="w-3.5 h-3.5 text-ink-faint" />
+          <span className="flex-1 text-left text-ink-muted text-xs">Search student, bus, fee...</span>
+          <kbd className="bg-canvas border border-hairline px-1.5 py-0.5 rounded text-[10px] font-mono text-ink-faint font-semibold">
+            ⌘K
           </kbd>
         </button>
 
-        <div className="hidden lg:flex items-center gap-2 text-xs text-slate-500 font-medium border-l border-slate-200 pl-4">
-          <Building2 className="w-3.5 h-3.5 text-primary-600" />
-          <span>Academic Session:</span>
-          <span className="bg-primary-50 text-primary-700 px-2 py-0.5 rounded-full font-mono text-[11px] font-semibold border border-primary-200">
-            2026-2027 (ACTIVE)
+        <div className="hidden lg:flex items-center gap-2 text-xs text-ink-muted border-l border-hairline pl-3">
+          <Building2 className="w-3.5 h-3.5 text-brand" />
+          <span className="text-[11px]">Academic Session:</span>
+          <span className="bg-pastel-mint text-pastel-mint-ink px-2 py-0.5 rounded-full text-[10px] font-semibold border border-transparent">
+            2026–2027 ACTIVE
           </span>
         </div>
       </div>
 
-      {/* Right Actions: Sibling Context Switcher & Profile */}
-      <div className="flex items-center gap-3">
-        {/* Multi-Account / Sibling Switcher (SPECIFICATION.md Section 5.1) */}
+      {/* Right Actions: Sibling Context Switcher & Operator Badge */}
+      <div className="flex items-center gap-2.5">
+        {/* Multi-Account / Sibling Switcher (FAM-03) */}
         <div className="relative">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs transition-colors"
+            className="flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-hairline bg-canvas hover:bg-canvas-chrome text-xs transition-colors shadow-whisper"
           >
-            <div className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 flex items-center justify-center font-bold text-[10px]">
+            <div className="w-5 h-5 rounded-full bg-pastel-sky text-pastel-sky-ink flex items-center justify-center font-bold text-[10px]">
               {selectedProfile.name[0]}
             </div>
             <div className="text-left hidden sm:block">
-              <div className="font-semibold text-slate-800 leading-tight">
+              <div className="font-medium text-ink leading-tight text-xs flex items-center gap-1.5">
                 {selectedProfile.name}
-              </div>
-              <div className="text-[10px] text-slate-500">
-                {selectedProfile.class}-{selectedProfile.section} • {selectedProfile.admNo}
+                <span className="text-[10px] text-ink-faint font-normal">
+                  ({selectedProfile.class}-{selectedProfile.section})
+                </span>
               </div>
             </div>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+            <ChevronDown className="w-3 h-3 text-ink-faint" />
           </button>
 
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-1 w-64 bg-white border border-slate-200 rounded-lg shadow-elevation-2 py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
-              <div className="px-3 py-2 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                Switch Student Profile (Family Unit)
+            <div className="absolute right-0 mt-1.5 w-64 bg-canvas border border-hairline rounded-lg shadow-popover py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
+              <div className="px-3 py-1.5 border-b border-hairline-subtle text-[10px] font-semibold text-ink-faint uppercase tracking-utility">
+                Family Profile Switcher (FAM-03)
               </div>
-              {mockSiblings.map((sibling) => (
-                <button
-                  key={sibling.id}
-                  onClick={() => {
-                    setSelectedProfile(sibling);
-                    setIsDropdownOpen(false);
-                  }}
-                  className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-slate-50 transition-colors ${
-                    selectedProfile.id === sibling.id ? 'bg-primary-50 text-primary-900 font-semibold' : 'text-slate-700'
-                  }`}
-                >
-                  <div>
-                    <div>{sibling.name}</div>
-                    <div className="text-[10px] text-slate-400">{sibling.class}-{sibling.section} • {sibling.admNo}</div>
-                  </div>
-                  {selectedProfile.id === sibling.id && (
-                    <span className="w-2 h-2 rounded-full bg-primary-600" />
-                  )}
-                </button>
-              ))}
+              {mockSiblings.map((sibling) => {
+                const isSelected = selectedProfile.id === sibling.id;
+                return (
+                  <button
+                    key={sibling.id}
+                    onClick={() => {
+                      setSelectedProfile(sibling);
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-canvas-chrome transition-colors ${
+                      isSelected ? 'bg-canvas-subdued text-ink font-semibold' : 'text-ink-secondary'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-pastel-sky text-pastel-sky-ink flex items-center justify-center font-bold text-[10px]">
+                        {sibling.name[0]}
+                      </div>
+                      <div>
+                        <div className="text-xs">{sibling.name}</div>
+                        <div className="text-[10px] text-ink-faint">
+                          {sibling.class}-{sibling.section} • {sibling.admNo}
+                        </div>
+                      </div>
+                    </div>
+                    {isSelected && <Check className="w-3.5 h-3.5 text-brand" />}
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
 
-        {/* Notifications */}
-        <button className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-50 relative">
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full" />
-        </button>
-
-        {/* User Identity */}
-        <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-          <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs">
-            RS
-          </div>
-          <div className="hidden md:block text-left text-xs">
-            <div className="font-semibold text-slate-900 leading-tight">Rajesh Sharma</div>
-            <div className="text-[10px] text-slate-400">Principal / Admin</div>
-          </div>
+        {/* Operator Badge */}
+        <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-canvas-chrome border border-hairline text-[11px] text-ink-muted">
+          <UserCircle2 className="w-3.5 h-3.5 text-ink-faint" />
+          <span>Reception Counter #1</span>
         </div>
       </div>
     </header>

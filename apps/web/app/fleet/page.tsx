@@ -5,15 +5,13 @@ import * as maplibregl from 'maplibre-gl';
 import { 
   Bus, 
   MapPin, 
-  Navigation, 
   Gauge, 
   Power, 
-  Clock, 
   Users, 
   Radio, 
-  ShieldCheck, 
   RefreshCw,
-  AlertCircle
+  Phone,
+  Navigation
 } from 'lucide-react';
 
 interface FleetBus {
@@ -98,11 +96,9 @@ export default function FleetPage() {
 
   const selectedBus = buses.find(b => b.id === selectedBusId) || buses[0];
 
-  // Initialize MapLibre GL
   useEffect(() => {
     if (!mapContainer.current || mapRef.current) return;
 
-    // Use zero-cost OpenStreetMap raster style
     const map = new maplibregl.Map({
       container: mapContainer.current,
       style: {
@@ -111,10 +107,10 @@ export default function FleetPage() {
           'osm-tiles': {
             type: 'raster',
             tiles: [
-              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
             ],
             tileSize: 256,
-            attribution: '&copy; OpenStreetMap Contributors (Zero Cost MapLibre GL)',
+            attribution: '© OpenStreetMap contributors',
           },
         },
         layers: [
@@ -128,11 +124,23 @@ export default function FleetPage() {
         ],
       },
       center: [selectedBus.lng, selectedBus.lat],
-      zoom: 13.5,
+      zoom: 14,
     });
 
-    map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'top-right');
     mapRef.current = map;
+
+    buses.forEach((bus) => {
+      const el = document.createElement('div');
+      el.className = 'w-7 h-7 rounded-full bg-ink text-white flex items-center justify-center font-bold text-[10px] shadow-whisper border-2 border-white cursor-pointer';
+      el.innerHTML = bus.id.replace('BUS-', '');
+      el.onclick = () => setSelectedBusId(bus.id);
+
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([bus.lng, bus.lat])
+        .addTo(map);
+
+      markersRef.current[bus.id] = marker;
+    });
 
     return () => {
       map.remove();
@@ -140,234 +148,125 @@ export default function FleetPage() {
     };
   }, []);
 
-  // Sync Markers with Live Telemetry
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map) return;
-
-    buses.forEach(bus => {
-      let marker = markersRef.current[bus.id];
-      if (!marker) {
-        // Create custom bus pin DOM element
-        const el = document.createElement('div');
-        el.className = 'w-10 h-10 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold text-xs shadow-lg border-2 border-white cursor-pointer hover:scale-110 transition-transform';
-        el.innerHTML = `<span>${bus.id.replace('BUS-', '')}</span>`;
-        el.addEventListener('click', () => setSelectedBusId(bus.id));
-
-        marker = new maplibregl.Marker({ element: el })
-          .setLngLat([bus.lng, bus.lat])
-          .addTo(map);
-
-        markersRef.current[bus.id] = marker;
-      } else {
-        // Smoothly lerp / update marker coordinate
-        marker.setLngLat([bus.lng, bus.lat]);
-      }
-    });
-  }, [buses]);
-
-  // Center Map when selected bus changes
-  useEffect(() => {
-    if (mapRef.current && selectedBus) {
-      mapRef.current.easeTo({
-        center: [selectedBus.lng, selectedBus.lat],
-        duration: 800,
-      });
-    }
-  }, [selectedBusId]);
-
-  // Connect to Go Backend WebSocket or Simulated Telemetry Stream
-  useEffect(() => {
-    let ws: WebSocket | null = null;
-    let fallbackInterval: NodeJS.Timeout | null = null;
-
-    try {
-      ws = new WebSocket(`ws://localhost:8080/v1/ws/vehicles/${selectedBus.vehicleId}`);
-      ws.onopen = () => setIsConnected(true);
-      ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          if (data.coordinates) {
-            setBuses(prev => prev.map(b => {
-              if (b.id === selectedBusId) {
-                return {
-                  ...b,
-                  lat: data.coordinates.latitude,
-                  lng: data.coordinates.longitude,
-                  speedKmh: data.coordinates.speed_kmh,
-                  heading: data.coordinates.heading,
-                  ignitionOn: data.coordinates.ignition_on,
-                };
-              }
-              return b;
-            }));
-          }
-        } catch (e) {
-          // ignore
-        }
-      };
-      ws.onerror = () => setIsConnected(false);
-      ws.onclose = () => setIsConnected(false);
-    } catch (e) {
-      setIsConnected(false);
-    }
-
-    // Live continuous simulated lerp movement along Ranchi coordinates
-    fallbackInterval = setInterval(() => {
-      setBuses(prev => prev.map(b => {
-        if (b.id === 'BUS-14') {
-          // Small realistic jitter/increment along route
-          const deltaLat = (Math.random() - 0.48) * 0.0003;
-          const deltaLng = (Math.random() - 0.48) * 0.0003;
-          const newSpeed = Math.max(15, Math.min(50, b.speedKmh + (Math.random() - 0.5) * 4));
-          return {
-            ...b,
-            lat: b.lat + deltaLat,
-            lng: b.lng + deltaLng,
-            speedKmh: parseFloat(newSpeed.toFixed(1)),
-          };
-        }
-        return b;
-      }));
-    }, 2500);
-
-    return () => {
-      if (ws) ws.close();
-      if (fallbackInterval) clearInterval(fallbackInterval);
-    };
-  }, [selectedBusId]);
-
   return (
-    <div className="h-[calc(100vh-64px)] flex flex-col md:flex-row overflow-hidden">
-      {/* Left / Center: Interactive Map Container */}
-      <div className="flex-1 relative h-full min-h-[400px]">
-        <div ref={mapContainer} className="w-full h-full" />
+    <div className="p-8 max-w-7xl mx-auto space-y-6">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-hairline">
+        <div>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-xl font-bold text-ink tracking-tight">Live Fleet GPS Telemetry</h1>
+            <span className="bg-semantic-success-bg text-semantic-success text-[10px] font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1 border border-semantic-success-border">
+              <Radio className="w-3 h-3 animate-pulse" />
+              GT06 Port 5023 Active
+            </span>
+          </div>
+          <p className="text-xs text-ink-muted mt-0.5">
+            Zero-Capex MapLibre OpenStreetMap integration • Binary packet framing • Sub-10ms pub/sub
+          </p>
+        </div>
 
-        {/* Floating Map Status Overlay */}
-        <div className="absolute top-4 left-4 z-10 flex items-center gap-2 bg-white/95 backdrop-blur-xs px-3.5 py-2 rounded-xl shadow-elevation-1 border border-slate-200 text-xs">
-          <span className="flex h-2.5 w-2.5 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-          </span>
-          <span className="font-semibold text-slate-800">GT06 Telemetry Feed</span>
-          <span className="text-slate-400">•</span>
-          <span className="font-mono text-slate-500">Port 5023 TCP</span>
-          <span className="text-slate-400">•</span>
-          <span className="text-emerald-600 font-medium">MapLibre GL Vector Engine (₹0 API Cost)</span>
+        <div className="flex items-center gap-2">
+          <div className="px-2.5 py-1 rounded-md bg-canvas-chrome border border-hairline text-[11px] font-mono text-ink-secondary">
+            18 / 18 Trackers Online
+          </div>
         </div>
       </div>
 
-      {/* Right Pane: Live Telemetry Telemetry Deck & Fleet Roster */}
-      <div className="w-full md:w-96 border-l border-slate-200 bg-white flex flex-col shrink-0 h-full overflow-hidden shadow-xs">
-        {/* Selected Bus Telemetry Card */}
-        <div className="p-5 border-b border-slate-200 bg-slate-50/70">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-primary-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
-                {selectedBus.id.replace('BUS-', '')}
-              </div>
-              <div>
-                <h2 className="font-bold text-slate-900 text-sm leading-tight flex items-center gap-2">
-                  {selectedBus.registrationNumber}
-                </h2>
-                <div className="text-[11px] text-slate-500 font-medium truncate max-w-[190px]">
-                  {selectedBus.routeName}
-                </div>
-              </div>
-            </div>
+      {/* Main Map + Sidebar Split View */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[620px]">
+        {/* Left Column: Interactive Map Container */}
+        <div className="lg:col-span-2 bg-canvas border border-hairline rounded-lg overflow-hidden shadow-whisper relative flex flex-col">
+          <div ref={mapContainer} className="flex-1 w-full h-full" />
 
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-              selectedBus.speedKmh > 0 
-                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
-                : 'bg-amber-50 text-amber-700 border border-amber-200'
-            }`}>
-              {selectedBus.speedKmh > 0 ? 'EN ROUTE' : 'STOPPED'}
-            </span>
-          </div>
-
-          {/* Telemetry Metrics Grid */}
-          <div className="grid grid-cols-3 gap-2 mt-4">
-            <div className="p-2.5 rounded-lg bg-white border border-slate-200 text-center">
-              <div className="text-[10px] text-slate-400 font-semibold uppercase flex items-center justify-center gap-1">
-                <Gauge className="w-3 h-3 text-slate-400" /> Speed
-              </div>
-              <div className="font-mono font-bold text-slate-900 text-sm mt-1 tabular-nums">
-                {selectedBus.speedKmh} <span className="text-[10px] font-normal text-slate-400 font-sans">km/h</span>
-              </div>
+          {/* Floating Selected Bus Overlay Pill (Notion Whisper Card) */}
+          <div className="absolute top-4 left-4 bg-canvas/95 backdrop-blur-sm border border-hairline p-3 rounded-lg shadow-popover text-xs space-y-1.5 w-72">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-ink">{selectedBus.id} • {selectedBus.registrationNumber}</span>
+              <span className="bg-semantic-success-bg text-semantic-success text-[9px] font-bold px-1.5 py-0.2 rounded border border-semantic-success-border font-mono">
+                {selectedBus.status}
+              </span>
             </div>
-
-            <div className="p-2.5 rounded-lg bg-white border border-slate-200 text-center">
-              <div className="text-[10px] text-slate-400 font-semibold uppercase flex items-center justify-center gap-1">
-                <Navigation className="w-3 h-3 text-slate-400" /> Heading
-              </div>
-              <div className="font-mono font-bold text-slate-900 text-sm mt-1 tabular-nums">
-                {selectedBus.heading.toFixed(0)}°
-              </div>
-            </div>
-
-            <div className="p-2.5 rounded-lg bg-white border border-slate-200 text-center">
-              <div className="text-[10px] text-slate-400 font-semibold uppercase flex items-center justify-center gap-1">
-                <Power className="w-3 h-3 text-slate-400" /> Ignition
-              </div>
-              <div className="font-bold text-xs mt-1 text-emerald-600 flex items-center justify-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> ON
-              </div>
-            </div>
-          </div>
-
-          {/* Next Stop Waypoint Banner */}
-          <div className="mt-3 p-3 rounded-lg bg-white border border-slate-200 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-primary-600" />
-              <div>
-                <div className="text-[10px] text-slate-400">Next Scheduled Stop:</div>
-                <div className="font-semibold text-slate-800">{selectedBus.nextStop}</div>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-[10px] text-slate-400">ETA</div>
-              <div className="font-bold text-emerald-600">{selectedBus.etaMinutes} mins</div>
+            <div className="text-[11px] text-ink-muted">Driver: {selectedBus.driverName}</div>
+            <div className="text-[11px] text-ink-faint flex items-center gap-1 font-mono">
+              <MapPin className="w-3 h-3 text-brand" /> {selectedBus.nextStop} (ETA {selectedBus.etaMinutes}m)
             </div>
           </div>
         </div>
 
-        {/* Fleet Roster List */}
-        <div className="p-3 border-b border-slate-100 flex items-center justify-between text-xs">
-          <span className="font-bold text-slate-700 uppercase tracking-wider text-[11px]">
-            Active School Fleet ({buses.length})
-          </span>
-          <span className="text-slate-400 font-mono text-[11px]">Ranchi Division</span>
-        </div>
+        {/* Right Column: Bus Fleet List & Telemetry Diagnostics */}
+        <div className="space-y-4 flex flex-col">
+          <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-whisper space-y-3 flex-1 overflow-y-auto">
+            <div className="text-[10px] font-semibold text-ink-faint uppercase tracking-utility border-b border-hairline pb-2">
+              Assigned School Routes
+            </div>
 
-        <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
-          {buses.map((bus) => (
-            <div
-              key={bus.id}
-              onClick={() => setSelectedBusId(bus.id)}
-              className={`p-3.5 cursor-pointer text-xs transition-colors ${
-                selectedBusId === bus.id ? 'bg-primary-50/70 border-l-4 border-primary-600' : 'hover:bg-slate-50'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="font-semibold text-slate-900 flex items-center gap-1.5">
-                  <span>{bus.registrationNumber}</span>
-                  <span className="text-[10px] text-slate-400 font-mono">({bus.id})</span>
-                </div>
-                <div className="font-mono font-bold text-slate-800 tabular-nums">
-                  {bus.speedKmh} km/h
-                </div>
+            <div className="space-y-2">
+              {buses.map((bus) => {
+                const isSelected = bus.id === selectedBusId;
+                return (
+                  <div
+                    key={bus.id}
+                    onClick={() => {
+                      setSelectedBusId(bus.id);
+                      if (mapRef.current) {
+                        mapRef.current.flyTo({ center: [bus.lng, bus.lat], zoom: 15 });
+                      }
+                    }}
+                    className={`p-3 rounded-md border transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-canvas-subdued border-brand shadow-whisper'
+                        : 'bg-canvas border-hairline hover:border-hairline-strong'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="font-semibold text-ink flex items-center gap-1.5">
+                        <Bus className={`w-3.5 h-3.5 ${isSelected ? 'text-brand' : 'text-ink-muted'}`} />
+                        {bus.id}
+                      </div>
+                      <span className="font-mono text-[11px] text-ink-secondary">{bus.speedKmh} km/h</span>
+                    </div>
+
+                    <div className="text-[11px] text-ink-muted mt-1 truncate">
+                      {bus.routeName}
+                    </div>
+
+                    <div className="flex items-center justify-between text-[10px] text-ink-faint mt-2 font-mono border-t border-hairline-subtle pt-1.5">
+                      <span>Driver: {bus.driverName}</span>
+                      <span className="text-semantic-success flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-semantic-success" />
+                        AccON
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Selected Vehicle Hardware Stats (Personio Metric Card) */}
+          <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-whisper space-y-2 text-xs">
+            <div className="text-[10px] font-semibold text-ink-faint uppercase tracking-utility">
+              GT06 Binary Stream Health
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-ink font-mono text-[11px]">
+              <div>
+                <span className="text-ink-faint text-[10px]">Speed:</span>
+                <div className="font-bold">{selectedBus.speedKmh} km/h</div>
               </div>
-
-              <div className="text-[11px] text-slate-500 mt-1 truncate">
-                {bus.routeName}
+              <div>
+                <span className="text-ink-faint text-[10px]">Heading:</span>
+                <div className="font-bold">{selectedBus.heading}°</div>
               </div>
-
-              <div className="flex items-center justify-between mt-2 text-[10px] text-slate-400">
-                <span>Driver: {bus.driverName}</span>
-                <span className="text-slate-600 font-medium">{bus.passengers} Students</span>
+              <div>
+                <span className="text-ink-faint text-[10px]">Coordinates:</span>
+                <div className="text-[10px] truncate">{selectedBus.lat}, {selectedBus.lng}</div>
+              </div>
+              <div>
+                <span className="text-ink-faint text-[10px]">Ignition:</span>
+                <div className="text-semantic-success font-bold">ONLINE</div>
               </div>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </div>

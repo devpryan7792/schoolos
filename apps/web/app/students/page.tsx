@@ -9,11 +9,14 @@ import {
   Download, 
   Phone, 
   ShieldCheck, 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle,
-  Eye,
-  X
+  Eye, 
+  X,
+  CreditCard,
+  GraduationCap,
+  Bus,
+  CheckCircle2,
+  Clock,
+  AlertCircle
 } from 'lucide-react';
 
 interface StudentRecord {
@@ -62,7 +65,7 @@ const mockStudents: StudentRecord[] = [
     section: 'B',
     guardianName: 'Rajesh Sharma',
     guardianPhone: '+91 98765 43210',
-    siblingBirthOrder: 2, // Second child receives automated 25% sibling concession!
+    siblingBirthOrder: 2,
     siblings: ['Aarav Sharma (Class 5-A)'],
     transportRoute: 'Route 4 (Hinoo Chowk)',
     feeStatus: 'PAID',
@@ -98,184 +101,153 @@ const mockStudents: StudentRecord[] = [
     guardianPhone: '+91 98765 44102',
     siblingBirthOrder: 1,
     siblings: [],
-    transportRoute: 'Route 7 (Birsa Chowk)',
+    transportRoute: 'Route 7 (Albert Ekka)',
     feeStatus: 'OVERDUE',
-    feeBalance: '₹8,400.00',
+    feeBalance: '₹8,500.00',
     attendanceStatus: 'ABSENT',
-  },
-  {
-    id: 'd5a80101-92b5-4b11-9ef0-0a1234567895',
-    admissionNo: 'DPS-2025-089',
-    name: 'Vikram Kumar',
-    cbsePen: 'PEN-93019284',
-    stateRollCode: '3089',
-    className: 'Class 1',
-    section: 'A',
-    guardianName: 'Sunil Kumar',
-    guardianPhone: '+91 98765 11982',
-    siblingBirthOrder: 1,
-    siblings: [],
-    transportRoute: 'Private / Self Walk',
-    feeStatus: 'PAID',
-    feeBalance: '₹0.00',
-    attendanceStatus: 'PRESENT',
   },
 ];
 
 export default function StudentsPage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedClass, setSelectedClass] = useState('ALL');
-  const [activeStudent, setActiveStudent] = useState<StudentRecord | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<StudentRecord | null>(null);
 
-  const filteredStudents = mockStudents.filter(s => {
-    const matchesSearch = 
-      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.admissionNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.cbsePen.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.guardianPhone.includes(searchQuery);
-
-    const matchesClass = selectedClass === 'ALL' || s.className === selectedClass;
-    return matchesSearch && matchesClass;
-  });
+  const filtered = mockStudents.filter(s => 
+    s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    s.admissionNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    s.guardianPhone.includes(searchQuery)
+  );
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-hairline">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Student Information System (SIS)</h1>
-            <span className="bg-primary-50 text-primary-700 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-primary-200">
-              {mockStudents.length} Enrolled (Session 2026-27)
-            </span>
-          </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Institutional Roster • CBSE PEN & BSEB Roll Registry • Family Linkages
+          <h1 className="text-xl font-bold text-ink tracking-tight">Student Information Register (SIS)</h1>
+          <p className="text-xs text-ink-muted mt-0.5">
+            1,550 enrolled students • CBSE Affiliation No. 3430012 • RLS Multi-Tenant Isolated
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <button className="inline-flex items-center gap-1.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium px-3 py-2 rounded-lg transition-colors">
-            <Download className="w-3.5 h-3.5 text-slate-500" />
-            Export Broadsheet CSV
+          <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-hairline bg-canvas hover:bg-canvas-chrome text-ink-secondary text-xs font-medium transition-colors shadow-whisper">
+            <Download className="w-3.5 h-3.5 text-ink-muted" />
+            Export CSV
           </button>
-          <button className="inline-flex items-center gap-1.5 bg-primary-600 hover:bg-primary-700 text-white text-xs font-medium px-3.5 py-2 rounded-lg shadow-sm transition-colors">
+          <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-brand hover:bg-brand-hover text-white text-xs font-medium transition-colors shadow-whisper">
             <Plus className="w-3.5 h-3.5" />
-            New Admission
+            Admit New Student
           </button>
         </div>
       </div>
 
-      {/* Filter Toolbar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-        <div className="relative w-full sm:w-96">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-          <input
+      {/* Filter & Search Bar (Personio High-Density Utility) */}
+      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <div className="relative w-full sm:w-80">
+          <Search className="w-3.5 h-3.5 text-ink-faint absolute left-3 top-2.5" />
+          <input 
             type="text"
+            placeholder="Search by student name, admission no, or phone..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by student name, admission no, CBSE PEN, or phone..."
-            className="w-full pl-9 pr-4 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:border-primary-500 outline-none transition-colors"
+            className="w-full pl-9 pr-3 py-1.5 bg-canvas border border-hairline rounded-md text-xs text-ink placeholder:text-ink-faint outline-none focus:border-brand shadow-whisper"
           />
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="flex items-center gap-1.5 text-xs text-slate-500">
-            <Filter className="w-3.5 h-3.5" />
-            <span>Class Filter:</span>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-canvas border border-hairline rounded-md text-xs text-ink-secondary shadow-whisper">
+            <Filter className="w-3.5 h-3.5 text-ink-muted" />
+            <span>Class: All</span>
           </div>
-          <select
-            value={selectedClass}
-            onChange={(e) => setSelectedClass(e.target.value)}
-            className="text-xs border border-slate-200 rounded-lg px-3 py-1.5 bg-slate-50 font-medium text-slate-700 outline-none"
-          >
-            <option value="ALL">All Classes (Pre-K to 12)</option>
-            <option value="Class 1">Class 1</option>
-            <option value="Class 2">Class 2</option>
-            <option value="Class 5">Class 5</option>
-            <option value="Class 8">Class 8</option>
-            <option value="Class 10">Class 10</option>
-          </select>
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-canvas border border-hairline rounded-md text-xs text-ink-secondary shadow-whisper">
+            <span>Fee Status: All</span>
+          </div>
         </div>
       </div>
 
-      {/* High-Density Broadsheet Table */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+      {/* Personio-Style High-Density Data Table */}
+      <div className="bg-canvas border border-hairline rounded-lg shadow-whisper overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left">
-            <thead className="bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider border-b border-slate-200 select-none">
-              <tr className="h-10">
-                <th className="px-4 py-2">Admission No</th>
-                <th className="px-4 py-2">Student Full Name</th>
-                <th className="px-4 py-2">CBSE PEN</th>
-                <th className="px-4 py-2">Class / Sec</th>
-                <th className="px-4 py-2">Guardian / Phone</th>
-                <th className="px-4 py-2 text-center">Sibling Order</th>
-                <th className="px-4 py-2">Transport Route</th>
-                <th className="px-4 py-2 text-right">Fee Dues</th>
-                <th className="px-4 py-2 text-center">Attendance</th>
-                <th className="px-4 py-2 text-center">Actions</th>
+          <table className="w-full text-left text-xs">
+            <thead className="bg-canvas-chrome border-b border-hairline text-ink-faint font-semibold uppercase text-[10px] tracking-utility">
+              <tr>
+                <th className="py-2.5 px-4">Adm No</th>
+                <th className="py-2.5 px-4">Student Name & Identifiers</th>
+                <th className="py-2.5 px-4">Class & Section</th>
+                <th className="py-2.5 px-4">Guardian Contact</th>
+                <th className="py-2.5 px-4">Sibling Concession</th>
+                <th className="py-2.5 px-4">Fee Dues Balance</th>
+                <th className="py-2.5 px-4">Status</th>
+                <th className="py-2.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filteredStudents.map((student, idx) => (
+            <tbody className="divide-y divide-hairline">
+              {filtered.map((student) => (
                 <tr 
                   key={student.id} 
-                  className={`h-10 hover:bg-slate-50/80 transition-colors ${
-                    idx % 2 === 1 ? 'bg-slate-50/40' : 'bg-white'
-                  }`}
+                  className="hover:bg-canvas-subdued/80 transition-colors group cursor-pointer"
+                  onClick={() => setSelectedStudent(student)}
                 >
-                  <td className="px-4 py-2 font-mono font-bold text-primary-700">
+                  <td className="py-3 px-4 font-mono font-semibold text-ink text-xs">
                     {student.admissionNo}
                   </td>
-                  <td className="px-4 py-2 font-semibold text-slate-900">
-                    {student.name}
+                  <td className="py-3 px-4">
+                    <div className="font-semibold text-ink text-xs">{student.name}</div>
+                    <div className="text-[11px] text-ink-faint font-mono">
+                      {student.cbsePen} • Roll: {student.stateRollCode}
+                    </div>
                   </td>
-                  <td className="px-4 py-2 font-mono text-slate-500 text-[11px]">
-                    {student.cbsePen}
-                  </td>
-                  <td className="px-4 py-2 font-medium text-slate-700">
-                    {student.className}-{student.section}
-                  </td>
-                  <td className="px-4 py-2 text-slate-600">
-                    <div>{student.guardianName}</div>
-                    <div className="text-[10px] text-slate-400 font-mono">{student.guardianPhone}</div>
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    {student.siblingBirthOrder === 2 ? (
-                      <span className="bg-violet-50 text-violet-700 border border-violet-200 text-[10px] font-bold px-1.5 py-0.5 rounded" title="Eligible for 25% Sibling Concession">
-                        2nd Child (25% Disc)
-                      </span>
-                    ) : (
-                      <span className="text-slate-400 text-[11px]">1st Child</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-2 text-slate-600">
-                    {student.transportRoute}
-                  </td>
-                  <td className="px-4 py-2 text-right font-mono font-bold tabular-nums">
-                    {student.feeStatus === 'PAID' ? (
-                      <span className="text-slate-400">₹0.00</span>
-                    ) : (
-                      <span className="text-rose-600">{student.feeBalance}</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      student.attendanceStatus === 'PRESENT'
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                        : 'bg-rose-50 text-rose-700 border border-rose-200'
-                    }`}>
-                      {student.attendanceStatus}
+                  <td className="py-3 px-4">
+                    <span className="bg-pastel-sky text-pastel-sky-ink px-2 py-0.5 rounded text-[10px] font-semibold border border-transparent">
+                      {student.className}-{student.section}
                     </span>
                   </td>
-                  <td className="px-4 py-2 text-center">
-                    <button
-                      onClick={() => setActiveStudent(student)}
-                      className="p-1 rounded text-slate-400 hover:text-primary-600 hover:bg-slate-100 transition-colors"
-                      title="Inspect Student Record"
+                  <td className="py-3 px-4">
+                    <div className="text-ink text-xs">{student.guardianName}</div>
+                    <div className="text-[11px] text-ink-muted flex items-center gap-1 mt-0.5 font-mono">
+                      <Phone className="w-3 h-3 text-ink-faint" /> {student.guardianPhone}
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">
+                    {student.siblingBirthOrder === 2 ? (
+                      <span className="bg-pastel-peach text-pastel-peach-ink px-2 py-0.5 rounded text-[10px] font-semibold border border-transparent inline-flex items-center gap-1">
+                        Child #2: 20% Off
+                      </span>
+                    ) : (
+                      <span className="text-[11px] text-ink-faint">Standard</span>
+                    )}
+                  </td>
+                  <td className="py-3 px-4 font-mono tabular-nums font-semibold">
+                    {student.feeStatus === 'PAID' ? (
+                      <span className="text-semantic-success">₹0.00 (Cleared)</span>
+                    ) : (
+                      <span className="text-semantic-critical">{student.feeBalance}</span>
+                    )}
+                  </td>
+                  <td className="py-3 px-4">
+                    {student.feeStatus === 'PAID' ? (
+                      <span className="bg-semantic-success-bg text-semantic-success px-2 py-0.5 rounded-full text-[10px] font-semibold border border-semantic-success-border inline-flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" /> Paid
+                      </span>
+                    ) : student.feeStatus === 'DUE_SOON' ? (
+                      <span className="bg-semantic-warning-bg text-semantic-warning px-2 py-0.5 rounded-full text-[10px] font-semibold border border-semantic-warning-border inline-flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> Due Soon
+                      </span>
+                    ) : (
+                      <span className="bg-semantic-critical-bg text-semantic-critical px-2 py-0.5 rounded-full text-[10px] font-semibold border border-semantic-critical-border inline-flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" /> Overdue
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-3 px-4 text-right">
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedStudent(student);
+                      }}
+                      className="p-1 rounded text-ink-faint hover:text-ink hover:bg-canvas-chrome transition-colors"
                     >
-                      <Eye className="w-4 h-4" />
+                      <Eye className="w-3.5 h-3.5" />
                     </button>
                   </td>
                 </tr>
@@ -285,90 +257,67 @@ export default function StudentsPage() {
         </div>
       </div>
 
-      {/* Student Detail Slide-Over Drawer */}
-      {activeStudent && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-100">
-          <div className="w-full max-w-md bg-white h-full shadow-elevation-2 flex flex-col animate-in slide-in-from-right duration-150">
-            {/* Drawer Header */}
-            <div className="p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-              <div>
-                <h2 className="text-base font-bold text-slate-900 tracking-tight">Student Profile</h2>
-                <div className="text-xs text-slate-500 font-mono mt-0.5">{activeStudent.admissionNo}</div>
+      {/* Slide-over Profile Drawer (Personio Drawer Pattern) */}
+      {selectedStudent && (
+        <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-[2px] flex justify-end animate-in fade-in duration-100">
+          <div className="w-full max-w-md bg-canvas border-l border-hairline shadow-popover h-full flex flex-col p-6 space-y-6 overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-hairline pb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-pastel-sky text-pastel-sky-ink flex items-center justify-center font-bold text-xs">
+                  {selectedStudent.name[0]}
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-ink">{selectedStudent.name}</h2>
+                  <p className="text-[11px] text-ink-faint font-mono">{selectedStudent.admissionNo}</p>
+                </div>
               </div>
               <button 
-                onClick={() => setActiveStudent(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
+                onClick={() => setSelectedStudent(null)}
+                className="p-1 rounded text-ink-faint hover:text-ink hover:bg-canvas-chrome transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Drawer Body */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 text-xs">
-              {/* Demographics Card */}
-              <div className="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
-                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Demographic Profile</div>
-                <div className="grid grid-cols-2 gap-3">
+            {/* Profile Overview Card */}
+            <div className="space-y-4 text-xs">
+              <div className="p-4 rounded-lg bg-canvas-chrome border border-hairline space-y-2">
+                <div className="font-semibold text-ink-muted text-[11px] uppercase tracking-utility">Academic Details</div>
+                <div className="grid grid-cols-2 gap-2 text-ink">
                   <div>
-                    <div className="text-[10px] text-slate-400">Full Name</div>
-                    <div className="font-semibold text-slate-900 text-sm mt-0.5">{activeStudent.name}</div>
+                    <span className="text-ink-faint text-[11px]">Class & Section:</span>
+                    <div className="font-semibold">{selectedStudent.className}-{selectedStudent.section}</div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-400">Enrolled Class</div>
-                    <div className="font-semibold text-slate-900 text-sm mt-0.5">{activeStudent.className}-{activeStudent.section}</div>
+                    <span className="text-ink-faint text-[11px]">CBSE PEN:</span>
+                    <div className="font-mono">{selectedStudent.cbsePen}</div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-400">CBSE PEN</div>
-                    <div className="font-mono text-slate-700 mt-0.5">{activeStudent.cbsePen}</div>
+                    <span className="text-ink-faint text-[11px]">Assigned Bus:</span>
+                    <div>{selectedStudent.transportRoute}</div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-400">State Roll Code</div>
-                    <div className="font-mono text-slate-700 mt-0.5">{activeStudent.stateRollCode}</div>
+                    <span className="text-ink-faint text-[11px]">Attendance Today:</span>
+                    <div className="text-semantic-success font-semibold">{selectedStudent.attendanceStatus}</div>
                   </div>
                 </div>
               </div>
 
-              {/* Family Tree & Sibling Discount Engine (SPECIFICATION.md Section 3.2) */}
-              <div className="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
-                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Family Tree & Sibling Engine</div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Guardian Name:</span>
-                    <span className="font-semibold text-slate-800">{activeStudent.guardianName}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Guardian Phone:</span>
-                    <span className="font-mono font-medium text-slate-800">{activeStudent.guardianPhone}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Family Birth Order:</span>
-                    <span className="font-bold text-slate-900">Child #{activeStudent.siblingBirthOrder}</span>
-                  </div>
-                  <div className="pt-2 border-t border-slate-100">
-                    <div className="text-[10px] text-slate-400 mb-1">Linked Siblings in School:</div>
-                    {activeStudent.siblings.length > 0 ? (
-                      activeStudent.siblings.map(sib => (
-                        <div key={sib} className="p-2 rounded bg-slate-50 font-medium text-slate-700 text-xs">
-                          {sib}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-slate-400 italic">No registered siblings in DPS Ranchi</div>
-                    )}
-                  </div>
+              {/* Fee Ledger Snapshot */}
+              <div className="p-4 rounded-lg bg-canvas-chrome border border-hairline space-y-2">
+                <div className="font-semibold text-ink-muted text-[11px] uppercase tracking-utility">Fee Ledger Snapshot</div>
+                <div className="flex justify-between items-center text-ink">
+                  <span className="text-ink-muted">Current Balance:</span>
+                  <span className="font-mono font-bold text-sm text-semantic-critical">{selectedStudent.feeBalance}</span>
                 </div>
-              </div>
-
-              {/* Outstanding Fee Summary */}
-              <div className="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
-                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Financial Status</div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Total Outstanding:</span>
-                  <span className="font-mono font-bold text-base text-rose-600">{activeStudent.feeBalance}</span>
+                <div className="flex justify-between items-center text-[11px] text-ink-faint border-t border-hairline pt-2">
+                  <span>Admit Card Status:</span>
+                  {selectedStudent.feeStatus === 'PAID' ? (
+                    <span className="text-semantic-success font-semibold">UNLOCKED</span>
+                  ) : (
+                    <span className="text-semantic-critical font-semibold">FEE-LOCKED</span>
+                  )}
                 </div>
-                <button className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 rounded-lg transition-colors">
-                  Collect Fee via POS Counter
-                </button>
               </div>
             </div>
           </div>

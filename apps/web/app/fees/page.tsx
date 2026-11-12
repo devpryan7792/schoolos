@@ -4,48 +4,45 @@ import React, { useState } from 'react';
 import { 
   CreditCard, 
   Receipt, 
-  QrCode, 
   CheckCircle2, 
   ShieldCheck, 
   Printer, 
+  Percent, 
   ArrowRight,
-  TrendingUp,
-  Percent,
-  Sparkles,
-  Download
+  Download,
+  AlertCircle
 } from 'lucide-react';
 
 export default function FeesPage() {
-  const [selectedInvoice, setSelectedInvoice] = useState('INV-2026-0042');
   const [amountTendered, setAmountTendered] = useState('4000.00');
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
 
-  // Accurate zero-float financial values
+  // Exact zero-float financial values
   const grossTotal = 4500.00;
   const siblingDiscount = 625.00; // 25% of Tuition (2,500 * 0.25)
   const netPayable = grossTotal - siblingDiscount; // ₹3,875.00
   const changeDue = Math.max(0, parseFloat(amountTendered || '0') - netPayable);
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
+    <div className="p-8 max-w-7xl mx-auto space-y-6">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-hairline">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Fee Architecture & Invoicing</h1>
-            <span className="bg-emerald-50 text-emerald-700 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-emerald-200">
-              Balanced Double-Entry Engine
+            <h1 className="text-xl font-bold text-ink tracking-tight">Fee Architecture & Invoicing</h1>
+            <span className="bg-semantic-success-bg text-semantic-success text-[10px] font-semibold px-2 py-0.5 rounded-full border border-semantic-success-border">
+              Double-Entry Invariant Balanced
             </span>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Audit-Proof General Ledger • Line-Item Concession Rule Engine • Dynamic UPI Intent
+          <p className="text-xs text-ink-muted mt-0.5">
+            Audit-proof general ledger • Sibling concession rule engine • Zero-float arithmetic
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <button 
             onClick={() => setIsReceiptModalOpen(true)}
-            className="inline-flex items-center gap-1.5 bg-primary-600 hover:bg-primary-700 text-white text-xs font-medium px-3.5 py-2 rounded-lg shadow-sm transition-colors"
+            className="inline-flex items-center gap-1.5 bg-brand hover:bg-brand-hover text-white text-xs font-medium px-3 py-1.5 rounded-md shadow-whisper transition-all"
           >
             <Printer className="w-3.5 h-3.5" />
             Counter POS (F3 Quick Collect)
@@ -53,296 +50,222 @@ export default function FeesPage() {
         </div>
       </div>
 
-      {/* Financial KPI Banner */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total November Demand</div>
-          <div className="text-2xl font-bold font-mono text-slate-900 mt-2 tabular-nums">
-            ₹62,45,000<span className="text-xs text-slate-400 font-sans">.00</span>
+      {/* Financial KPI Banner (Personio Metric Tiles) */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+        <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
+          <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">November Gross Demand</div>
+          <div className="text-xl font-bold font-mono text-ink mt-2 tabular-nums">
+            ₹62,45,000<span className="text-xs text-ink-faint font-sans">.00</span>
           </div>
-          <div className="text-xs text-slate-500 mt-1">1,550 Active Student Accounts</div>
+          <div className="text-[11px] text-ink-muted mt-1">1,550 Active Student Accounts</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Concessions & Waivers</div>
-          <div className="text-2xl font-bold font-mono text-violet-700 mt-2 tabular-nums">
-            ₹4,18,750<span className="text-xs text-slate-400 font-sans">.00</span>
+        <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
+          <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">Concessions & Sibling Waivers</div>
+          <div className="text-xl font-bold font-mono text-pastel-lavender-ink mt-2 tabular-nums">
+            ₹4,18,750<span className="text-xs text-ink-faint font-sans">.00</span>
           </div>
-          <div className="text-xs text-slate-500 mt-1">Sibling & Staff Child Discounts Applied</div>
+          <div className="text-[11px] text-ink-muted mt-1">Automated FAM-03 Rule Hierarchy</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Net Realized Collection</div>
-          <div className="text-2xl font-bold font-mono text-emerald-600 mt-2 tabular-nums">
-            ₹48,22,400<span className="text-xs text-slate-400 font-sans">.00</span>
+        <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
+          <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">Net Realized Collection</div>
+          <div className="text-xl font-bold font-mono text-semantic-success mt-2 tabular-nums">
+            ₹48,22,400<span className="text-xs text-ink-faint font-sans">.00</span>
           </div>
-          <div className="text-xs text-emerald-600 font-medium mt-1">82.7% Settlement Ratio</div>
+          <div className="text-[11px] text-semantic-success font-medium mt-1">82.7% Settlement Ratio</div>
         </div>
       </div>
 
-      {/* Split Invoicing & Ledger Inspection Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column (2 Cols): Itemized Fee Breakdown & Double-Entry Ledger */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Active Student Fee Invoice Card */}
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
+      {/* Invoicing & General Ledger Breakdown Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column (2 Cols): Student Invoice Inspection */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="bg-canvas border border-hairline rounded-lg overflow-hidden shadow-whisper">
+            <div className="p-4 border-b border-hairline flex items-center justify-between bg-canvas-chrome">
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Student Invoice Inspection</span>
-                <h2 className="text-base font-bold text-slate-900 mt-0.5">
-                  Aarav Sharma • Class 5-A <span className="font-mono text-xs text-primary-700 font-normal">(DPS-2024-042)</span>
+                <span className="text-[10px] font-semibold text-ink-faint uppercase tracking-utility">Student Invoice Inspection</span>
+                <h2 className="text-sm font-bold text-ink mt-0.5">
+                  Aarav Sharma • Class 5-A <span className="font-mono text-xs text-brand font-normal">(DPS-2024-042)</span>
                 </h2>
               </div>
               <div className="text-right">
-                <span className="bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                <span className="bg-semantic-warning-bg text-semantic-warning border border-semantic-warning-border text-[10px] font-bold px-2 py-0.5 rounded-full">
                   PENDING COLLECTION
                 </span>
-                <div className="text-[10px] text-slate-400 font-mono mt-1">Invoice: {selectedInvoice}</div>
+                <div className="text-[10px] text-ink-faint font-mono mt-0.5">INV-2026-0042</div>
               </div>
             </div>
 
-            {/* Itemized Line Items Table */}
-            <div className="p-6 space-y-4">
-              <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">Line-Item Fee Heads Breakdown</div>
-              <table className="w-full text-xs text-left">
-                <thead className="bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider border-b border-slate-200">
+            {/* Line Items Table */}
+            <div className="p-4 space-y-3">
+              <table className="w-full text-left text-xs">
+                <thead className="text-[10px] uppercase font-semibold text-ink-faint tracking-utility border-b border-hairline">
                   <tr>
-                    <th className="px-4 py-2.5">Fee Category</th>
-                    <th className="px-4 py-2.5 text-right">Standard Amount</th>
-                    <th className="px-4 py-2.5 text-right">Concession (Sibling 25%)</th>
-                    <th className="px-4 py-2.5 text-right">Net Payable</th>
+                    <th className="pb-2">Description</th>
+                    <th className="pb-2 text-right">Fee Rule</th>
+                    <th className="pb-2 text-right">Gross (₹)</th>
+                    <th className="pb-2 text-right">Concession (₹)</th>
+                    <th className="pb-2 text-right">Net (₹)</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 font-mono">
+                <tbody className="divide-y divide-hairline font-mono text-xs">
                   <tr>
-                    <td className="px-4 py-3 font-sans font-semibold text-slate-900">Tuition Fee (Monthly)</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-700">₹2,500.00</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-emerald-600">-₹625.00</td>
-                    <td className="px-4 py-3 text-right tabular-nums font-bold text-slate-900">₹1,875.00</td>
+                    <td className="py-2.5 font-sans font-medium text-ink">Monthly Tuition Fee (November)</td>
+                    <td className="py-2.5 text-right text-ink-faint font-sans text-[11px]">Regular Term</td>
+                    <td className="py-2.5 text-right tabular-nums text-ink">2,500.00</td>
+                    <td className="py-2.5 text-right tabular-nums text-semantic-critical">-625.00 (25%)</td>
+                    <td className="py-2.5 text-right tabular-nums font-bold text-ink">1,875.00</td>
                   </tr>
                   <tr>
-                    <td className="px-4 py-3 font-sans font-semibold text-slate-900">Transport Fee (Zone 2: Hinoo)</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-700">₹1,000.00</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-400">₹0.00</td>
-                    <td className="px-4 py-3 text-right tabular-nums font-bold text-slate-900">₹1,000.00</td>
+                    <td className="py-2.5 font-sans font-medium text-ink">Transport Fee (Route 4 - Hinoo)</td>
+                    <td className="py-2.5 text-right text-ink-faint font-sans text-[11px]">Zone B (5–10km)</td>
+                    <td className="py-2.5 text-right tabular-nums text-ink">1,200.00</td>
+                    <td className="py-2.5 text-right tabular-nums text-ink-faint">0.00</td>
+                    <td className="py-2.5 text-right tabular-nums font-bold text-ink">1,200.00</td>
                   </tr>
                   <tr>
-                    <td className="px-4 py-3 font-sans font-semibold text-slate-900">Science Laboratory Fee</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-700">₹1,000.00</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-400">₹0.00</td>
-                    <td className="px-4 py-3 text-right tabular-nums font-bold text-slate-900">₹1,000.00</td>
+                    <td className="py-2.5 font-sans font-medium text-ink">Science Lab & Computer Maintenance</td>
+                    <td className="py-2.5 text-right text-ink-faint font-sans text-[11px]">Quarterly Fee</td>
+                    <td className="py-2.5 text-right tabular-nums text-ink">800.00</td>
+                    <td className="py-2.5 text-right tabular-nums text-ink-faint">0.00</td>
+                    <td className="py-2.5 text-right tabular-nums font-bold text-ink">800.00</td>
                   </tr>
                 </tbody>
-                <tfoot className="bg-slate-50 border-t-2 border-slate-200 font-mono font-bold text-xs">
-                  <tr>
-                    <td className="px-4 py-3 font-sans uppercase">Total Summary</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-500">₹4,500.00</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-emerald-600">-₹625.00</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-base text-primary-900 font-extrabold">₹3,875.00</td>
-                  </tr>
-                </tfoot>
               </table>
-            </div>
 
-            {/* Double-Entry Balancing Verification Panel (SPECIFICATION.md Section 3) */}
-            <div className="p-6 bg-slate-50/80 border-t border-slate-200 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5 uppercase tracking-wider">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  Double-Entry General Ledger Balance Validation
-                </span>
-                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-mono font-bold px-2 py-0.5 rounded">
-                  ∑ DEBITS == ∑ CREDITS (₹4,500.00)
+              {/* Total Calculation Strip */}
+              <div className="border-t border-hairline pt-3 flex justify-between items-center text-xs">
+                <span className="text-ink-muted">Sibling Concession (Ananya Sharma, Class 2-B)</span>
+                <span className="text-sm font-bold font-mono text-ink tabular-nums">
+                  Total Payable: ₹3,875.00
                 </span>
               </div>
+            </div>
+          </div>
 
-              <div className="grid grid-cols-2 gap-4 text-xs font-mono">
-                {/* Debits side */}
-                <div className="p-3 rounded-lg bg-white border border-slate-200 space-y-1.5">
-                  <div className="font-sans font-bold text-slate-500 text-[10px] uppercase">Debits (Assets & Subsidies)</div>
-                  <div className="flex justify-between">
-                    <span>Student A/R (Asset):</span>
-                    <span className="font-bold">₹3,875.00</span>
-                  </div>
-                  <div className="flex justify-between text-violet-700">
-                    <span>Sibling Concession (Expense):</span>
-                    <span className="font-bold">₹625.00</span>
-                  </div>
-                  <div className="pt-1.5 border-t border-slate-100 flex justify-between font-bold text-slate-900">
-                    <span>Total Debits:</span>
-                    <span>₹4,500.00</span>
-                  </div>
-                </div>
+          {/* Double Entry Ledger Audit Box */}
+          <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-whisper space-y-3">
+            <div className="flex items-center justify-between border-b border-hairline pb-2">
+              <span className="text-xs font-semibold text-ink">General Ledger Journal Entries</span>
+              <span className="text-[10px] font-mono text-semantic-success flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3" /> ∑Debits == ∑Credits
+              </span>
+            </div>
 
-                {/* Credits side */}
-                <div className="p-3 rounded-lg bg-white border border-slate-200 space-y-1.5">
-                  <div className="font-sans font-bold text-slate-500 text-[10px] uppercase">Credits (Revenue Accounts)</div>
-                  <div className="flex justify-between">
-                    <span>Tuition Income:</span>
-                    <span className="font-bold">₹2,500.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Transport Income:</span>
-                    <span className="font-bold">₹1,000.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Lab Fee Income:</span>
-                    <span className="font-bold">₹1,000.00</span>
-                  </div>
-                  <div className="pt-1.5 border-t border-slate-100 flex justify-between font-bold text-slate-900">
-                    <span>Total Credits:</span>
-                    <span>₹4,500.00</span>
-                  </div>
-                </div>
+            <div className="p-3 rounded-md bg-canvas-chrome border border-hairline text-xs font-mono space-y-1.5">
+              <div className="flex justify-between">
+                <span className="text-ink">Dr. Accounts Receivable (Student Dues)</span>
+                <span className="font-semibold text-ink">₹3,875.00</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-ink">Dr. Sibling Concession Expense Account</span>
+                <span className="font-semibold text-ink">₹625.00</span>
+              </div>
+              <div className="flex justify-between pl-4 text-ink-muted border-t border-hairline-subtle pt-1">
+                <span>Cr. Tuition Fee Revenue Account</span>
+                <span>₹2,500.00</span>
+              </div>
+              <div className="flex justify-between pl-4 text-ink-muted">
+                <span>Cr. Transport Fee Revenue Account</span>
+                <span>₹1,200.00</span>
+              </div>
+              <div className="flex justify-between pl-4 text-ink-muted">
+                <span>Cr. Lab & STEM Fee Revenue Account</span>
+                <span>₹800.00</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column (1 Col): Dynamic UPI QR Code & Cash Collection POS */}
-        <div className="space-y-6">
-          {/* Dynamic UPI Intent Card */}
-          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs text-center space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 text-left">
-              <div>
-                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Dynamic UPI QR Code</h3>
-                <div className="text-[11px] text-slate-400">NPCI Intent with Transaction ID</div>
-              </div>
-              <QrCode className="w-5 h-5 text-primary-600" />
-            </div>
-
-            {/* Generated UPI QR Box */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 inline-block">
-              <div className="w-44 h-44 bg-white border border-slate-300 rounded-lg p-2 flex flex-col items-center justify-center space-y-2">
-                <div className="w-36 h-36 border-2 border-slate-900 border-dashed rounded flex items-center justify-center text-slate-400 text-xs font-mono text-center p-2">
-                  [UPI QR]
-                  <br />
-                  ₹3,875.00
-                  <br />
-                  {selectedInvoice}
-                </div>
-              </div>
-            </div>
-
-            <div className="text-xs font-mono text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200 break-all text-left">
-              <span className="text-[10px] text-slate-400 block font-sans">Raw Intent Payload:</span>
-              upi://pay?pa=dpsschool@icici&pn=DelhiPublicSchool&am=3875.00&tr={selectedInvoice}&cu=INR
-            </div>
-
-            <p className="text-[11px] text-slate-400">
-              Parents scan from phone $\rightarrow$ auto-reconciles in PostgreSQL via webhook.
-            </p>
+        {/* Right Column: Instant Cash Counter Collection Form */}
+        <div className="bg-canvas border border-hairline rounded-lg p-5 shadow-whisper space-y-4">
+          <div className="border-b border-hairline pb-3">
+            <h2 className="text-sm font-bold text-ink">Cash Counter Collection (POS)</h2>
+            <p className="text-[11px] text-ink-faint">Offline-first receipt generation with ESC/POS print</p>
           </div>
 
-          {/* Quick Counter Cash Collection Box (F3 POS) */}
-          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs space-y-4">
-            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-              <Receipt className="w-4 h-4 text-primary-600" />
-              Counter POS Quick Cash Collection
-            </h3>
-
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="text-[11px] font-semibold text-slate-500">Amount Tendered (Cash):</label>
-                <div className="mt-1 relative">
-                  <span className="absolute left-3 top-2 font-mono text-slate-400">₹</span>
-                  <input
-                    type="number"
-                    value={amountTendered}
-                    onChange={(e) => setAmountTendered(e.target.value)}
-                    className="w-full pl-7 pr-3 py-1.5 border border-slate-200 rounded-lg font-mono font-bold text-sm bg-slate-50 focus:bg-white focus:border-primary-500 outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
-                <div className="flex justify-between text-slate-500">
-                  <span>Net Payable:</span>
-                  <span className="font-mono font-bold text-slate-900">₹{netPayable.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-slate-500">
-                  <span>Change to Parent:</span>
-                  <span className="font-mono font-bold text-emerald-600">₹{changeDue.toFixed(2)}</span>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setIsReceiptModalOpen(true)}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 rounded-lg flex items-center justify-center gap-2 shadow-xs transition-colors"
-              >
-                <Printer className="w-4 h-4" />
-                Collect Cash & Print ESC/POS Receipt
-              </button>
+          <div className="space-y-3 text-xs">
+            <div>
+              <label className="text-ink-muted text-[11px]">Amount Due:</label>
+              <div className="text-xl font-bold font-mono text-ink mt-0.5">₹3,875.00</div>
             </div>
+
+            <div>
+              <label className="text-ink-muted text-[11px]">Cash Tendered (₹):</label>
+              <input
+                type="text"
+                value={amountTendered}
+                onChange={(e) => setAmountTendered(e.target.value)}
+                className="w-full mt-1 p-2 rounded-md border border-hairline bg-canvas font-mono font-semibold text-sm text-ink outline-none focus:border-brand shadow-whisper"
+              />
+            </div>
+
+            <div className="p-3 rounded-md bg-canvas-chrome border border-hairline flex justify-between items-center text-xs font-mono">
+              <span className="text-ink-muted">Change to Return:</span>
+              <span className="font-bold text-semantic-success text-sm">
+                ₹{changeDue.toFixed(2)}
+              </span>
+            </div>
+
+            <button 
+              onClick={() => setIsReceiptModalOpen(true)}
+              className="w-full py-2 bg-brand hover:bg-brand-hover text-white text-xs font-medium rounded-md shadow-whisper transition-all flex items-center justify-center gap-2"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              Collect & Print 80mm Receipt
+            </button>
           </div>
         </div>
       </div>
 
-      {/* 80mm ESC/POS Receipt Preview Modal (DESIGN.md Wireframe 5.2) */}
+      {/* ESC/POS Thermal Receipt Modal */}
       {isReceiptModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 animate-in fade-in duration-100">
-          <div className="bg-white rounded-2xl shadow-elevation-2 border border-slate-200 max-w-sm w-full overflow-hidden p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <span className="text-xs font-bold text-slate-500 uppercase">Thermal Receipt Preview (80mm)</span>
-              <button 
-                onClick={() => setIsReceiptModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 font-bold"
-              >
-                ✕
-              </button>
+        <div className="fixed inset-0 z-50 bg-black/25 backdrop-blur-[2px] flex items-center justify-center p-4 animate-in fade-in duration-100">
+          <div className="w-full max-w-sm bg-canvas border border-hairline rounded-lg shadow-popover p-6 space-y-4">
+            <div className="text-center border-b border-dashed border-hairline pb-3 space-y-0.5">
+              <div className="font-bold text-sm text-ink">DELHI PUBLIC SCHOOL</div>
+              <div className="text-[10px] text-ink-muted">Main Campus, Ranchi, Jharkhand</div>
+              <div className="text-[10px] font-mono text-ink-faint">Affiliation No. 3430012</div>
             </div>
 
-            {/* Monospace Thermal Tape Emulation */}
-            <div className="font-mono text-[11px] bg-slate-50 p-4 border border-slate-200 rounded-lg space-y-2 leading-relaxed text-slate-800">
-              <div className="text-center font-bold text-xs">
-                DELHI PUBLIC SCHOOL
-                <br />
-                RANCHI, JHARKHAND
-              </div>
-              <div className="border-t border-dashed border-slate-400 my-1" />
-              <div>Receipt No: RCP-2026-098234</div>
-              <div>Date: 08-Nov-2026 09:14 AM</div>
-              <div>Student: Aarav Sharma (5-A)</div>
-              <div>Adm No : DPS-2024-042</div>
-              <div className="border-t border-dashed border-slate-400 my-1" />
+            <div className="font-mono text-[11px] space-y-1.5 text-ink">
               <div className="flex justify-between">
-                <span>Tuition (Net):</span>
-                <span>₹1,875.00</span>
+                <span>Receipt: RCP-2026-098234</span>
+                <span>Date: 08/11/2026</span>
               </div>
               <div className="flex justify-between">
-                <span>Transport Fee:</span>
-                <span>₹1,000.00</span>
+                <span>Student: Aarav Sharma</span>
+                <span>Class: 5-A</span>
               </div>
-              <div className="flex justify-between">
-                <span>Science Lab Fee:</span>
-                <span>₹1,000.00</span>
+              <div className="border-t border-dashed border-hairline pt-1.5 space-y-1">
+                <div className="flex justify-between">
+                  <span>Tuition (Net of 25% Sibling):</span>
+                  <span>₹1,875.00</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Transport (Zone B):</span>
+                  <span>₹1,200.00</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Science Lab:</span>
+                  <span>₹800.00</span>
+                </div>
               </div>
-              <div className="border-t border-dashed border-slate-400 my-1" />
-              <div className="flex justify-between font-bold">
-                <span>TOTAL PAID (CASH):</span>
+              <div className="border-t border-b border-hairline py-1.5 flex justify-between font-bold text-xs">
+                <span>NET COLLECTED (CASH):</span>
                 <span>₹3,875.00</span>
               </div>
-              <div className="flex justify-between text-slate-500">
-                <span>Remaining Balance:</span>
-                <span>₹0.00</span>
-              </div>
-              <div className="border-t border-dashed border-slate-400 my-1" />
-              <div className="text-center text-[10px] text-slate-400">
-                https://verify.schoolos.in/RCP-098234
-                <br />
-                Thank you!
+              <div className="text-[10px] text-center text-ink-faint pt-1">
+                *** 3-WAY DIGITAL CLEARANCE VALIDATED ***
               </div>
             </div>
 
             <button
-              onClick={() => {
-                alert('Sent 80mm ESC/POS raw command stream to USB thermal printer!');
-                setIsReceiptModalOpen(false);
-              }}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 rounded-lg transition-colors text-xs flex items-center justify-center gap-1.5"
+              onClick={() => setIsReceiptModalOpen(false)}
+              className="w-full py-1.5 bg-canvas-chrome hover:bg-hairline text-xs font-medium text-ink rounded-md transition-colors"
             >
-              <Printer className="w-3.5 h-3.5" />
-              Confirm & Print Raw ESC/POS Stream
+              Close Receipt
             </button>
           </div>
         </div>

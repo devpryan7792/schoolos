@@ -4,13 +4,8 @@ import React, { useState } from 'react';
 import { 
   Fingerprint, 
   Users, 
-  Calendar, 
   CheckCircle2, 
   Clock, 
-  XCircle, 
-  AlertTriangle,
-  ArrowRight,
-  ShieldCheck,
   Send
 } from 'lucide-react';
 
@@ -18,81 +13,81 @@ export default function AttendancePage() {
   const [selectedClass, setSelectedClass] = useState('Class 5-A');
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
+    <div className="p-8 max-w-7xl mx-auto space-y-6">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-hairline">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Attendance & Biometrics</h1>
-            <span className="bg-emerald-50 text-emerald-700 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-emerald-200">
-              Live Biometric Buffer
+            <h1 className="text-xl font-bold text-ink tracking-tight">Attendance & Biometrics</h1>
+            <span className="bg-semantic-success-bg text-semantic-success text-[10px] font-semibold px-2 py-0.5 rounded-full border border-semantic-success-border">
+              eSSL ADMS LAN Synced
             </span>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Student Daily Roll Call • Staff Biometric Punch Logs (eSSL / Mantra) • Automated Absence Push Alerts
+          <p className="text-xs text-ink-muted mt-0.5">
+            Student daily roll call • 15-minute shift grace period • Automated WhatsApp absence alerts
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <button className="inline-flex items-center gap-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-medium px-3.5 py-2 rounded-lg shadow-sm transition-colors">
+          <button className="inline-flex items-center gap-1.5 bg-brand hover:bg-brand-hover text-white text-xs font-medium px-3 py-1.5 rounded-md shadow-whisper transition-all">
             <Send className="w-3.5 h-3.5" />
-            Dispatch Absence Alerts (WhatsApp & Push)
+            Dispatch Absence Push Alerts
           </button>
         </div>
       </div>
 
-      {/* KPI Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Present</div>
-          <div className="text-2xl font-bold text-slate-900 mt-2 tabular-nums">
-            1,482 <span className="text-xs font-normal text-slate-400">/ 1,550</span>
+      {/* KPI Stats (Personio Metric Tiles) */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3.5">
+        <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
+          <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">Total Present</div>
+          <div className="text-xl font-bold text-ink mt-2 tabular-nums">
+            1,482 <span className="text-xs font-normal text-ink-faint">/ 1,550</span>
           </div>
-          <div className="text-xs text-emerald-600 font-medium mt-1">95.6% Daily Turnout</div>
+          <div className="text-[11px] text-semantic-success font-medium mt-1">95.6% Daily Turnout</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Absent</div>
-          <div className="text-2xl font-bold text-rose-600 mt-2 tabular-nums">
-            48 <span className="text-xs font-normal text-slate-400">Students</span>
+        <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
+          <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">Total Absent</div>
+          <div className="text-xl font-bold text-semantic-critical mt-2 tabular-nums">
+            48 <span className="text-xs font-normal text-ink-faint">Students</span>
           </div>
-          <div className="text-xs text-rose-600 font-medium mt-1">Absence Alerts Ready</div>
+          <div className="text-[11px] text-semantic-critical font-medium mt-1">Absence Alerts Ready</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Late Arrivals (Gate)</div>
-          <div className="text-2xl font-bold text-amber-600 mt-2 tabular-nums">
-            20 <span className="text-xs font-normal text-slate-400">Logged</span>
+        <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
+          <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">Gate Late Arrivals</div>
+          <div className="text-xl font-bold text-semantic-warning mt-2 tabular-nums">
+            20 <span className="text-xs font-normal text-ink-faint">Logged</span>
           </div>
-          <div className="text-xs text-amber-600 font-medium mt-1">After 08:00 AM cut-off</div>
+          <div className="text-[11px] text-semantic-warning font-medium mt-1">After 08:00 AM cutoff</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Staff Biometric Check-ins</div>
-          <div className="text-2xl font-bold text-primary-900 mt-2 tabular-nums">
-            78 <span className="text-xs font-normal text-slate-400">/ 82</span>
+        <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
+          <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">Staff Biometrics</div>
+          <div className="text-xl font-bold text-ink mt-2 tabular-nums">
+            78 <span className="text-xs font-normal text-ink-faint">/ 82</span>
           </div>
-          <div className="text-xs text-slate-500 mt-1">eSSL Biometric LAN synced</div>
+          <div className="text-[11px] text-ink-muted mt-1">4 Shifts Active</div>
         </div>
       </div>
 
-      {/* Two Column Grid: Class Roster & Real-Time Biometric Punch Logs */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Two Column Grid: Class Roster & Staff Biometric Punch Logs */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Class Roll Call */}
-        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-          <div className="p-5 border-b border-slate-200 flex items-center justify-between">
+        <div className="lg:col-span-2 bg-canvas border border-hairline rounded-lg overflow-hidden shadow-whisper">
+          <div className="p-4 border-b border-hairline flex items-center justify-between bg-canvas-chrome">
             <div>
-              <h2 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                <Users className="w-4 h-4 text-primary-600" />
+              <h2 className="text-xs font-bold text-ink tracking-tight flex items-center gap-2">
+                <Users className="w-3.5 h-3.5 text-brand" />
                 Class Roll Call: {selectedClass}
               </h2>
-              <div className="text-xs text-slate-500 mt-0.5">38 of 40 Present (95.0%)</div>
+              <div className="text-[11px] text-ink-faint mt-0.5">38 of 40 Present (95.0%)</div>
             </div>
 
             <select
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
-              className="text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 bg-slate-50 font-medium text-slate-700 outline-none"
+              className="text-xs border border-hairline rounded-md px-2 py-1 bg-canvas font-medium text-ink outline-none shadow-whisper"
             >
               <option value="Class 5-A">Class 5-A</option>
               <option value="Class 2-B">Class 2-B</option>
@@ -101,40 +96,41 @@ export default function AttendancePage() {
             </select>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left">
-              <thead className="bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider border-b border-slate-200">
+          <div className="p-4">
+            <table className="w-full text-left text-xs">
+              <thead className="text-[10px] uppercase font-semibold text-ink-faint tracking-utility border-b border-hairline">
                 <tr>
-                  <th className="px-4 py-2.5">Roll #</th>
-                  <th className="px-4 py-2.5">Admission No</th>
-                  <th className="px-4 py-2.5">Student Name</th>
-                  <th className="px-4 py-2.5">Recorded Time</th>
-                  <th className="px-4 py-2.5 text-center">Status</th>
+                  <th className="pb-2">Roll No</th>
+                  <th className="pb-2">Student Name</th>
+                  <th className="pb-2">Clock In Time</th>
+                  <th className="pb-2 text-right">Daily Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-hairline">
                 {[
-                  { roll: 14, adm: 'DPS-2024-042', name: 'Aarav Sharma', time: '07:52 AM', status: 'PRESENT' },
-                  { roll: 15, adm: 'DPS-2024-043', name: 'Aditya Gupta', time: '07:48 AM', status: 'PRESENT' },
-                  { roll: 16, adm: 'DPS-2024-044', name: 'Alok Nath', time: '08:06 AM', status: 'LATE' },
-                  { roll: 17, adm: 'DPS-2024-045', name: 'Aniket Raj', time: '—', status: 'ABSENT' },
-                  { roll: 18, adm: 'DPS-2024-046', name: 'Ayush Kumar', time: '07:55 AM', status: 'PRESENT' },
-                ].map((row) => (
-                  <tr key={row.adm} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="px-4 py-2.5 font-mono text-slate-500">{row.roll}</td>
-                    <td className="px-4 py-2.5 font-mono font-medium text-primary-700">{row.adm}</td>
-                    <td className="px-4 py-2.5 font-semibold text-slate-900">{row.name}</td>
-                    <td className="px-4 py-2.5 text-slate-500 font-mono">{row.time}</td>
-                    <td className="px-4 py-2.5 text-center">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        row.status === 'PRESENT'
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : row.status === 'LATE'
-                          ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                          : 'bg-rose-50 text-rose-700 border border-rose-200'
-                      }`}>
-                        {row.status}
-                      </span>
+                  { roll: '01', name: 'Aarav Sharma', time: '07:52 AM', status: 'PRESENT' },
+                  { roll: '02', name: 'Ayush Kumar', time: '07:55 AM', status: 'PRESENT' },
+                  { roll: '03', name: 'Deepak Soren', time: '08:12 AM', status: 'LATE' },
+                  { roll: '04', name: 'Neha Kumari', time: '—', status: 'ABSENT' },
+                ].map((s) => (
+                  <tr key={s.roll} className="hover:bg-canvas-subdued/80 transition-colors">
+                    <td className="py-2.5 font-mono text-ink text-xs">{s.roll}</td>
+                    <td className="py-2.5 font-medium text-ink">{s.name}</td>
+                    <td className="py-2.5 font-mono text-ink-muted text-[11px]">{s.time}</td>
+                    <td className="py-2.5 text-right">
+                      {s.status === 'PRESENT' ? (
+                        <span className="bg-semantic-success-bg text-semantic-success px-2 py-0.5 rounded-full text-[10px] font-semibold border border-semantic-success-border inline-flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" /> Present
+                        </span>
+                      ) : s.status === 'LATE' ? (
+                        <span className="bg-semantic-warning-bg text-semantic-warning px-2 py-0.5 rounded-full text-[10px] font-semibold border border-semantic-warning-border inline-flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> Late (8:12 AM)
+                        </span>
+                      ) : (
+                        <span className="bg-semantic-critical-bg text-semantic-critical px-2 py-0.5 rounded-full text-[10px] font-semibold border border-semantic-critical-border inline-flex items-center gap-1">
+                          Absent (Unexcused)
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -143,35 +139,35 @@ export default function AttendancePage() {
           </div>
         </div>
 
-        {/* Real-Time Staff Biometric Punch Feed */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-            <h2 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <Fingerprint className="w-4 h-4 text-primary-600" />
+        {/* Staff Biometric ADMS Stream */}
+        <div className="bg-canvas border border-hairline rounded-lg p-5 shadow-whisper space-y-3">
+          <div className="border-b border-hairline pb-2.5">
+            <h2 className="text-xs font-bold text-ink flex items-center gap-1.5">
+              <Fingerprint className="w-3.5 h-3.5 text-brand" />
               Live Staff Biometric Stream
             </h2>
-            <span className="text-[10px] font-mono text-slate-400">eSSL LAN</span>
+            <p className="text-[11px] text-ink-faint mt-0.5">eSSL Push Protocol `/iclock/cdata`</p>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2 text-xs">
             {[
-              { name: 'Dr. Anita Roy', role: 'PGT Chemistry', punch: 'CHECK_IN', time: '07:44:12 AM', terminal: 'Gate 1 Biometric' },
-              { name: 'R. K. Mishra', role: 'TGT Mathematics', punch: 'CHECK_IN', time: '07:48:02 AM', terminal: 'Staff Room Sensor' },
-              { name: 'Suman Sinha', role: 'PRT Hindi', punch: 'CHECK_IN', time: '07:51:30 AM', terminal: 'Gate 1 Biometric' },
-              { name: 'Mohan Ram', role: 'Bus Driver (Route 4)', punch: 'CHECK_IN', time: '06:30:15 AM', terminal: 'Transport Depot' },
-              { name: 'Neelam Jha', role: 'Librarian', punch: 'CHECK_IN', time: '07:58:20 AM', terminal: 'Library Sensor' },
+              { name: 'Dr. S. K. Mukherjee', role: 'Physics PGT', time: '07:44 AM', status: 'ON TIME' },
+              { name: 'Smt. Anjali Roy', role: 'English TGT', time: '07:51 AM', status: 'ON TIME' },
+              { name: 'Sri Alok Nath', role: 'Maths TGT', time: '08:08 AM', status: 'GRACE (8m)' },
+              { name: 'Smt. Rekha Verma', role: 'Maths PGT', time: 'LEAVE', status: 'SICK LEAVE' },
             ].map((staff, idx) => (
-              <div key={idx} className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
+              <div key={idx} className="p-2.5 rounded-md bg-canvas-chrome border border-hairline flex items-center justify-between">
                 <div>
-                  <div className="font-semibold text-slate-900">{staff.name}</div>
-                  <div className="text-[10px] text-slate-400">{staff.role} • {staff.terminal}</div>
+                  <div className="font-semibold text-ink text-xs">{staff.name}</div>
+                  <div className="text-[10px] text-ink-faint">{staff.role} • {staff.time}</div>
                 </div>
-                <div className="text-right">
-                  <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-1.5 py-0.5 rounded">
-                    {staff.punch}
-                  </span>
-                  <div className="text-[10px] text-slate-400 font-mono mt-0.5">{staff.time}</div>
-                </div>
+                <span className={`text-[9px] font-semibold px-2 py-0.5 rounded font-mono ${
+                  staff.status === 'ON TIME' ? 'bg-semantic-success-bg text-semantic-success border border-semantic-success-border' :
+                  staff.status.includes('GRACE') ? 'bg-semantic-warning-bg text-semantic-warning border border-semantic-warning-border' :
+                  'bg-pastel-lavender text-pastel-lavender-ink'
+                }`}>
+                  {staff.status}
+                </span>
               </div>
             ))}
           </div>

@@ -10,33 +10,30 @@ import {
   CreditCard, 
   GraduationCap, 
   Fingerprint, 
-  BookOpen, 
-  FlaskConical, 
-  Settings, 
   ShieldCheck,
-  ChevronRight,
   FileSpreadsheet,
   ScanLine,
   CalendarDays,
   MessageSquare,
   FileText,
+  School,
   Sparkles
 } from 'lucide-react';
 
 const coreNavigationItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Live Fleet Telemetry', href: '/fleet', icon: Bus, badge: 'LIVE' },
+  { name: 'Live Fleet Telemetry', href: '/fleet', icon: Bus, badge: 'LIVE', badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   { name: 'Students & SIS', href: '/students', icon: Users },
-  { name: 'Fee Ledger & Invoicing', href: '/fees', icon: CreditCard },
-  { name: 'Academics & Grading', href: '/academics', icon: GraduationCap },
+  { name: 'Fee Ledger & POS', href: '/fees', icon: CreditCard },
+  { name: 'Academics & CCE', href: '/academics', icon: GraduationCap },
   { name: 'Attendance & Biometrics', href: '/attendance', icon: Fingerprint },
 ];
 
-const operationsAndAINavigationItems = [
-  { name: 'Smart CSV Ingestion', href: '/ingestion', icon: FileSpreadsheet, badge: 'DATA-26' },
-  { name: 'Computer Vision OMR', href: '/omr', icon: ScanLine, badge: 'AI' },
+const operationsNavigationItems = [
+  { name: 'Smart CSV Ingestion', href: '/ingestion', icon: FileSpreadsheet, badge: 'DATA-26', badgeColor: 'bg-pastel-sky text-pastel-sky-ink border-transparent' },
+  { name: 'Computer Vision OMR', href: '/omr', icon: ScanLine, badge: 'AI', badgeColor: 'bg-pastel-lavender text-pastel-lavender-ink border-transparent' },
   { name: 'Master Timetable', href: '/timetable', icon: CalendarDays },
-  { name: 'Dunning & Comms Hub', href: '/communications', icon: MessageSquare },
+  { name: 'Fee Dunning & Comms', href: '/communications', icon: MessageSquare },
   { name: 'Vector Document Studio', href: '/documents', icon: FileText },
 ];
 
@@ -44,45 +41,47 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 border-r border-slate-200 bg-white flex flex-col shrink-0 min-h-screen">
-      {/* Brand Header */}
-      <div className="h-16 px-5 border-b border-slate-200 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-primary-900 text-white flex items-center justify-center font-bold text-sm tracking-wider shadow-sm">
-            OS
+    <aside className="w-64 border-r border-hairline bg-canvas-chrome flex flex-col shrink-0 min-h-screen select-none">
+      {/* Brand & Workspace Switcher Header (Notion Paper-Calm Style) */}
+      <div className="h-14 px-4 border-b border-hairline flex items-center justify-between bg-canvas">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-7 h-7 rounded-md bg-ink text-white flex items-center justify-center font-bold text-xs shadow-whisper">
+            <School className="w-4 h-4 text-white" />
           </div>
-          <div>
-            <div className="font-semibold text-slate-900 text-sm tracking-tight flex items-center gap-1.5">
+          <div className="truncate">
+            <div className="font-semibold text-ink text-xs tracking-tight flex items-center gap-1.5 leading-none">
               SchoolOS
-              <span className="bg-primary-50 text-primary-600 text-[10px] font-bold px-1.5 py-0.5 rounded border border-primary-200">
-                PRO
+              <span className="bg-canvas-subdued text-ink-muted text-[10px] font-semibold px-1.5 py-0.5 rounded border border-hairline">
+                Core
               </span>
             </div>
-            <div className="text-[11px] text-slate-500 font-medium">Enterprise Core</div>
+            <div className="text-[11px] text-ink-faint truncate mt-0.5">DPS Ranchi • CBSE</div>
           </div>
         </div>
       </div>
 
-      {/* Tenant Context Capsule */}
-      <div className="px-4 py-3 bg-slate-50 border-b border-slate-200">
-        <div className="flex items-center justify-between text-xs">
-          <span className="font-medium text-slate-700 truncate max-w-[170px]">
-            DPS Ranchi (Main Campus)
+      {/* Tenant Context Capsule (Personio Identity Badge) */}
+      <div className="px-4 py-2.5 bg-canvas-subdued border-b border-hairline flex items-center justify-between text-xs">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+          <span className="font-medium text-ink-secondary text-[11px] truncate">
+            Session 2026–2027
           </span>
-          <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" title="System Operational" />
         </div>
-        <div className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1 font-mono">
-          <ShieldCheck className="w-3 h-3 text-primary-600" /> RLS Isolated
+        <div className="text-[10px] font-mono text-ink-faint flex items-center gap-1 bg-white px-1.5 py-0.5 rounded border border-hairline">
+          <ShieldCheck className="w-3 h-3 text-brand" />
+          RLS ON
         </div>
       </div>
 
-      {/* Nav Items */}
-      <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
+      {/* Navigation Sections */}
+      <nav className="flex-1 px-2.5 py-3 space-y-4 overflow-y-auto">
+        {/* Core Administrative Register */}
         <div>
-          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">
+          <div className="text-[10px] font-semibold text-ink-faint uppercase tracking-utility px-2.5 mb-1.5">
             Core Modules
           </div>
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             {coreNavigationItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -90,18 +89,18 @@ export default function Sidebar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center justify-between px-3 py-2 rounded-md text-xs font-medium transition-colors ${
+                  className={`group flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-all ${
                     isActive
-                      ? 'bg-primary-50 text-primary-700 font-semibold'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      ? 'bg-white text-ink font-semibold shadow-whisper border border-hairline'
+                      : 'text-ink-secondary hover:bg-black/[0.03] hover:text-ink'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-primary-600' : 'text-slate-400'}`} />
-                    <span>{item.name}</span>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-brand' : 'text-ink-muted group-hover:text-ink'}`} />
+                    <span className="truncate">{item.name}</span>
                   </div>
                   {item.badge && (
-                    <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[10px] font-bold px-1.5 py-0.2 rounded-full animate-pulse">
+                    <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded font-mono border ${item.badgeColor}`}>
                       {item.badge}
                     </span>
                   )}
@@ -111,30 +110,31 @@ export default function Sidebar() {
           </div>
         </div>
 
+        {/* AI Copilots & Operations Register */}
         <div>
-          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">
-            Operations & AI Copilots
+          <div className="text-[10px] font-semibold text-ink-faint uppercase tracking-utility px-2.5 mb-1.5">
+            Operations & AI
           </div>
-          <div className="space-y-1">
-            {operationsAndAINavigationItems.map((item) => {
+          <div className="space-y-0.5">
+            {operationsNavigationItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center justify-between px-3 py-2 rounded-md text-xs font-medium transition-colors ${
+                  className={`group flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-all ${
                     isActive
-                      ? 'bg-primary-50 text-primary-700 font-semibold'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      ? 'bg-white text-ink font-semibold shadow-whisper border border-hairline'
+                      : 'text-ink-secondary hover:bg-black/[0.03] hover:text-ink'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-primary-600' : 'text-slate-400'}`} />
-                    <span>{item.name}</span>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-brand' : 'text-ink-muted group-hover:text-ink'}`} />
+                    <span className="truncate">{item.name}</span>
                   </div>
                   {item.badge && (
-                    <span className="bg-primary-50 text-primary-600 border border-primary-200 text-[10px] font-bold px-1.5 py-0.2 rounded-full font-mono">
+                    <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded font-mono border ${item.badgeColor}`}>
                       {item.badge}
                     </span>
                   )}
@@ -145,14 +145,13 @@ export default function Sidebar() {
         </div>
       </nav>
 
-      {/* Bottom Footer Info */}
-      <div className="p-4 border-t border-slate-200 text-xs text-slate-500 flex items-center justify-between">
-        <div>
-          <span className="font-mono text-[11px]">v1.0.0-rc2</span>
-          <div className="text-[10px] text-slate-400">GT06 Telemetry Gateway</div>
-        </div>
-        <div className="bg-slate-100 text-slate-600 text-[10px] px-1.5 py-0.5 rounded border border-slate-200 font-mono">
-          :5023 TCP
+      {/* Footer Profile & Keyboard Shortcut hint */}
+      <div className="p-3 border-t border-hairline bg-canvas">
+        <div className="flex items-center justify-between text-[11px] text-ink-muted">
+          <span className="truncate">DPS Main Campus</span>
+          <span className="text-[10px] font-mono bg-canvas-chrome px-1.5 py-0.5 rounded border border-hairline text-ink-faint">
+            v2.4
+          </span>
         </div>
       </div>
     </aside>
