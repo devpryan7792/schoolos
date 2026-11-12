@@ -42,6 +42,53 @@ func NewServer(database *sql.DB, rdb *redis.Client, jwtSecret string) *Server {
 	}
 }
 
+// RootHandler handles GET / providing API welcome overview and endpoint directory.
+func (s *Server) RootHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"error":     "Not Found",
+			"message":   fmt.Sprintf("Endpoint %s does not exist", r.URL.Path),
+			"directory": "/ (visit root for API index)",
+		})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]any{
+		"service":     "SchoolOS Core REST & Telemetry API Engine",
+		"version":     "v1.0.0-production",
+		"status":      "operational",
+		"environment": "development",
+		"web_portal":  "http://localhost:3000",
+		"description": "Enterprise operating system for Tier-2/3 Indian private and state schools (CBSE/ICSE/State Boards)",
+		"endpoints": map[string]string{
+			"health":               "/healthz",
+			"dashboard_stats":      "/v1/dashboard/stats",
+			"students":             "/v1/students",
+			"student_fee_dues":     "/v1/students/{student_id}/fee-dues",
+			"cash_collection_pos":  "/v1/payments/collect-cash",
+			"offline_receipt_sync": "/v1/sync/offline-receipts",
+			"fleet_buses":          "/v1/fleet/buses",
+			"attendance_summary":   "/v1/attendance/summary",
+			"whatsapp_webhook":     "/v1/webhooks/whatsapp",
+			"dunning_plans":        "/v1/dunning/plans",
+			"principal_digest":     "/v1/reports/principal-digest",
+			"id_card_svg":          "/v1/documents/id-card/{student_id}",
+			"admit_card":           "/v1/documents/admit-card/{student_id}",
+			"transfer_certificate": "/v1/documents/transfer-certificate",
+			"biometric_adms":       "/iclock/cdata",
+			"academics_marksheet":  "/v1/academics/marksheets/{student_id}",
+			"timetable_validation": "/v1/timetable/validate",
+			"auto_substitutions":   "/v1/timetable/substitutions/auto-assign",
+			"tiered_notifications": "/v1/notifications/dispatch",
+			"omr_evaluation":       "/v1/omr/evaluate",
+		},
+		"timestamp": time.Now().UTC().Format(time.RFC3339),
+	})
+}
+
 // HealthHandler returns system health status.
 func (s *Server) HealthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")

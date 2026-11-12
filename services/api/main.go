@@ -89,7 +89,8 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	// Public healthcheck
+	// Root Index & Healthcheck
+	mux.HandleFunc("/", server.RootHandler)
 	mux.HandleFunc("/health", server.HealthHandler)
 	mux.HandleFunc("/healthz", server.HealthHandler)
 
