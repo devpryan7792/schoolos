@@ -1,0 +1,341 @@
+{
+  "info": {
+    "name": "SchoolOS Core API Production Suite",
+    "_postman_id": "schoolos-production-api-collection-v1",
+    "description": "Comprehensive Postman collection for SchoolOS Core REST API, Webhooks, Multi-Tenancy RLS, and Hardware Ingestion.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "tenantId",
+      "value": "3cf28a79-7f3f-5905-af21-24a0126ef7ad",
+      "type": "string"
+    },
+    {
+      "key": "jwtToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. System Health & Infrastructure",
+      "item": [
+        {
+          "name": "Healthz Check",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/healthz"
+          }
+        },
+        {
+          "name": "CORS Preflight",
+          "request": {
+            "method": "OPTIONS",
+            "header": [
+              { "key": "Origin", "value": "http://localhost:3000" }
+            ],
+            "url": "{{baseUrl}}/v1/dashboard/stats"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Authentication & Tenancy",
+      "item": [
+        {
+          "name": "Phone Number Login (JWT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+919876543210\",\n  \"password\": \"SecretPassword123\"\n}"
+            },
+            "url": "{{baseUrl}}/v1/auth/login/phone"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Executive Command & Roster",
+      "item": [
+        {
+          "name": "Dashboard Live Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/dashboard/stats"
+          }
+        },
+        {
+          "name": "Students Roster (RLS Isolated)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-Tenant-ID", "value": "{{tenantId}}" }
+            ],
+            "url": "{{baseUrl}}/v1/students"
+          }
+        },
+        {
+          "name": "Student Fee Dues (Zero-Float)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/students/d1a80101-92b5-4b11-9ef0-0a1234567891/fee-dues"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Cash Counter & Ledger POS",
+      "item": [
+        {
+          "name": "Collect Cash (F3 POS)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoice_id\": \"d1a80101-0000-0000-0000-000000000042\",\n  \"student_id\": \"d1a80101-0000-0000-0000-000000000001\",\n  \"amount_paid\": 4200.00,\n  \"payment_mode\": \"CASH\",\n  \"idempotency_key\": \"postman-pos-receipt-001\"\n}"
+            },
+            "url": "{{baseUrl}}/v1/payments/collect-cash"
+          }
+        },
+        {
+          "name": "Offline Receipt Sync",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"receipts\": [\n    {\n      \"idempotency_key\": \"offline-receipt-postman-01\",\n      \"invoice_id\": \"d1a80101-0000-0000-0000-000000000042\",\n      \"student_id\": \"d1a80101-0000-0000-0000-000000000001\",\n      \"amount_paid\": 4200.00,\n      \"payment_mode\": \"CASH\",\n      \"collected_at\": \"2026-11-08T03:00:00Z\"\n    }\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/v1/sync/offline-receipts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Fleet GPS & Hardware Ingestion",
+      "item": [
+        {
+          "name": "Active Bus Fleet Coordinates",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/fleet/buses"
+          }
+        },
+        {
+          "name": "SinoTrack ST-901L SMS Provisioning",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"imei\": \"352387082002457\",\n  \"server_ip\": \"139.59.12.44\",\n  \"port\": 5023\n}"
+            },
+            "url": "{{baseUrl}}/v1/fleet/hardware/provisioning-sms"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Attendance & Biometric ADMS",
+      "item": [
+        {
+          "name": "Attendance Daily Summary",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/attendance/summary"
+          }
+        },
+        {
+          "name": "eSSL ADMS Device Ping Handshake",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/iclock/cdata?SN=DS-K1T804AMF123&options=all"
+          }
+        },
+        {
+          "name": "eSSL ADMS Punch Log Upload",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "1042\t2026-11-12 08:02:14\t0\t1\t0\t0"
+            },
+            "url": "{{baseUrl}}/iclock/cdata?SN=DS-K1T804AMF123&table=ATTLOG"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. WhatsApp Copilot & Autonomous Dunning",
+      "item": [
+        {
+          "name": "Meta Cloud Webhook Challenge Handshake",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/webhooks/whatsapp?hub.mode=subscribe&hub.challenge=test_challenge_123&hub.verify_token=schoolos_wa_verify_token_prod_2026"
+          }
+        },
+        {
+          "name": "Inbound Parent Query (Hinglish)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"object\": \"whatsapp_business_account\",\n  \"entry\": [{\n    \"changes\": [{\n      \"value\": {\n        \"messages\": [{\n          \"from\": \"919876543210\",\n          \"text\": {\"body\": \"Bhaiya fee kitna baaki hai Aarav ka?\"}\n        }]\n      }\n    }]\n  }]\n}"
+            },
+            "url": "{{baseUrl}}/v1/webhooks/whatsapp"
+          }
+        },
+        {
+          "name": "7-Stage Dunning Plans & Dropout Risk",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/dunning/plans"
+          }
+        },
+        {
+          "name": "Principal Autonomous Morning Digest",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/reports/principal-digest"
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Document Studio & Clearances",
+      "item": [
+        {
+          "name": "CR80 PVC Student ID Card (SVG)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/documents/id-card/d1a80101-92b5-4b11-9ef0-0a1234567891"
+          }
+        },
+        {
+          "name": "CBSE Fee-Locked Admit Card",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/documents/admit-card/d1a80101-92b5-4b11-9ef0-0a1234567891"
+          }
+        },
+        {
+          "name": "Transfer Certificate (3-Way Digital Clearance)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"admission_number\": \"DPS-2024-042\",\n  \"student_name\": \"Aarav Sharma\",\n  \"mother_name\": \"Smt. Sunita Sharma\",\n  \"father_name\": \"Sri Rajesh Sharma\",\n  \"date_of_birth\": \"2014-07-15\",\n  \"class_last\": \"Class 10\",\n  \"clearances\": {\n    \"library_pending_books\": 0,\n    \"lab_breakage_dues\": 0.00,\n    \"outstanding_fees\": 0.00\n  }\n}"
+            },
+            "url": "{{baseUrl}}/v1/documents/transfer-certificate"
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Academics, Ingestion, Timetable & OMR",
+      "item": [
+        {
+          "name": "CBSE CCE & State Board Marksheet",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/academics/marksheets/d1a80101-92b5-4b11-9ef0-0a1234567891"
+          }
+        },
+        {
+          "name": "Auto-Detect Colloquial Hindi Headers",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"headers\": [\"विद्यार्थी का नाम\", \"अनुक्रमांक\", \"पिता का नाम\", \"मोबाइल नंबर\"]\n}"
+            },
+            "url": "{{baseUrl}}/v1/ingestion/auto-detect-columns"
+          }
+        },
+        {
+          "name": "Timetable Hard Constraint Validation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slots\": []\n}"
+            },
+            "url": "{{baseUrl}}/v1/timetable/validate"
+          }
+        },
+        {
+          "name": "Auto-Assign Teacher Substitutions",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"absent_teacher_id\": \"00000000-0000-0000-0000-000000000101\",\n  \"day\": 1\n}"
+            },
+            "url": "{{baseUrl}}/v1/timetable/substitutions/auto-assign"
+          }
+        },
+        {
+          "name": "Tiered Notification Dispatch",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recipient\": {\n    \"guardian_name\": \"Rajesh Sharma\",\n    \"phone_number\": \"+919876543210\",\n    \"push_token\": \"fcm_token_device_abc123\",\n    \"platform\": \"ANDROID\"\n  },\n  \"title\": \"Fee Reminder\",\n  \"body\": \"Your fee is due.\",\n  \"priority\": \"STANDARD\",\n  \"action_url\": \"https://schoolos.in/fees\"\n}"
+            },
+            "url": "{{baseUrl}}/v1/notifications/dispatch"
+          }
+        },
+        {
+          "name": "Computer Vision OMR 50-Q Evaluation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sheet_id\": \"omr-sheet-001\",\n  \"answer_key\": [\"A\",\"B\",\"C\",\"D\"]\n}"
+            },
+            "url": "{{baseUrl}}/v1/omr/evaluate"
+          }
+        }
+      ]
+    }
+  ]
+}
