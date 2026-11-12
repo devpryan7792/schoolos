@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import * as maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { 
   Bus, 
   MapPin, 
@@ -99,48 +100,56 @@ export default function FleetPage() {
   useEffect(() => {
     if (!mapContainer.current || mapRef.current) return;
 
-    const map = new maplibregl.Map({
-      container: mapContainer.current,
-      style: {
-        version: 8,
-        sources: {
-          'osm-tiles': {
-            type: 'raster',
-            tiles: [
-              'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
-            ],
-            tileSize: 256,
-            attribution: '© OpenStreetMap contributors',
+    try {
+      const map = new maplibregl.Map({
+        container: mapContainer.current,
+        style: {
+          version: 8,
+          sources: {
+            'osm-tiles': {
+              type: 'raster',
+              tiles: [
+                'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+              ],
+              tileSize: 256,
+              attribution: '© OpenStreetMap contributors',
+            },
           },
+          layers: [
+            {
+              id: 'osm-tiles-layer',
+              type: 'raster',
+              source: 'osm-tiles',
+              minzoom: 0,
+              maxzoom: 19,
+            },
+          ],
         },
-        layers: [
-          {
-            id: 'osm-tiles-layer',
-            type: 'raster',
-            source: 'osm-tiles',
-            minzoom: 0,
-            maxzoom: 19,
-          },
-        ],
-      },
-      center: [selectedBus.lng, selectedBus.lat],
-      zoom: 14,
-    });
+        center: [selectedBus.lng, selectedBus.lat],
+        zoom: 14,
+      });
 
-    mapRef.current = map;
+      map.on('error', () => {
+        // Silently swallow tile/worker network errors if working offline
+      });
 
-    buses.forEach((bus) => {
-      const el = document.createElement('div');
-      el.className = 'w-7 h-7 rounded-full bg-ink text-white flex items-center justify-center font-bold text-[10px] shadow-whisper border-2 border-white cursor-pointer';
-      el.innerHTML = bus.id.replace('BUS-', '');
-      el.onclick = () => setSelectedBusId(bus.id);
+      mapRef.current = map;
 
-      const marker = new maplibregl.Marker({ element: el })
-        .setLngLat([bus.lng, bus.lat])
-        .addTo(map);
+      buses.forEach((bus) => {
+        const el = document.createElement('div');
+        el.className = 'w-7 h-7 rounded-full bg-ink text-white flex items-center justify-center font-bold text-[10px] shadow-whisper border-2 border-white cursor-pointer';
+        el.innerHTML = bus.id.replace('BUS-', '');
+        el.onclick = () => setSelectedBusId(bus.id);
 
-      markersRef.current[bus.id] = marker;
-    });
+        const marker = new maplibregl.Marker({ element: el })
+          .setLngLat([bus.lng, bus.lat])
+          .addTo(map);
+
+        markersRef.current[bus.id] = marker;
+      });
+    } catch (err) {
+      console.warn('MapLibre GL initialization notice:', err);
+    }
 
     return () => {
       map.remove();
