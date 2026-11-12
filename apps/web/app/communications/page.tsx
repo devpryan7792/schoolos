@@ -133,15 +133,15 @@ export default function CommunicationsPage() {
             </div>
             <div>
               <h1 className="text-xl font-semibold -tracking-[0.02em] text-ink">
-                Autonomous Fee Dunning & Communications Hub
+                Fee Reminders & Automated Communications
               </h1>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="text-[11px] font-mono uppercase tracking-[0.06em] text-ink-faint">
-                  Invariant 5 • Cost-Optimal Cascade
+                  Cost-Optimal Cascade
                 </span>
                 <span className="text-hairline-dark">•</span>
                 <span className="inline-flex items-center gap-1 text-[11px] font-mono px-1.5 py-0.2 rounded bg-semantic-highlight-light text-semantic-highlight border border-semantic-highlight/20">
-                  <Sparkles className="w-2.5 h-2.5" /> AGENT-30 / NOTIF-27
+                  <Sparkles className="w-2.5 h-2.5" /> Multi-Channel Delivery
                 </span>
               </div>
             </div>
@@ -300,7 +300,7 @@ export default function CommunicationsPage() {
           <div className="flex items-center gap-2">
             <Smartphone className="w-3.5 h-3.5 text-semantic-success" />
             <h2 className="text-[11px] font-semibold uppercase tracking-[0.06em] text-ink-faint">
-              WhatsApp Copilot Simulation
+              WhatsApp Notification Preview
             </h2>
           </div>
 

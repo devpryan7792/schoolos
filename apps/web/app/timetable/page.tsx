@@ -197,7 +197,7 @@ export default function TimetablePage() {
             <div className="border-b border-hairline pb-3">
               <div className="font-bold text-sm text-ink flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-brand" />
-                Autonomous Substitution Optimizer (HR-06)
+                Teacher Substitution Assignment
               </div>
               <p className="text-[11px] text-ink-faint mt-0.5">
                 Absent Teacher: Smt. Rekha Verma (Period 2 Math)

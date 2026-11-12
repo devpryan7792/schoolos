@@ -6,28 +6,28 @@
 
 :root {
   --canvas: #FFFFFF;
-  --canvas-subdued: #FBFBFA;
-  --canvas-chrome: #F7F6F5;
-  --hairline: #E8E7E5;
-  --hairline-subtle: #F0EFEA;
+  --canvas-subdued: #FAF9F7;
+  --canvas-chrome: #F5F4F0;
+  --hairline: rgba(0, 0, 0, 0.08);
+  --hairline-subtle: rgba(0, 0, 0, 0.04);
   
-  --ink: #161616;
-  --ink-secondary: #37352F;
-  --ink-muted: #6A6966;
-  --ink-faint: #9B9A97;
+  --ink: #191919;
+  --ink-secondary: #383734;
+  --ink-muted: #6B6966;
+  --ink-faint: #9C9A96;
 
-  --brand: #0075DE;
-  --brand-hover: #005BAB;
-  --brand-subtle: #EBF5FE;
+  --brand: #0A66C2;
+  --brand-hover: #084E96;
+  --brand-subtle: #EBF3FB;
 
-  --status-success: #1B7339;
-  --status-success-bg: #EBF8F1;
-  --status-warning: #965300;
-  --status-warning-bg: #FEF7EB;
-  --status-critical: #B42318;
-  --status-critical-bg: #FEF0EE;
-  --status-highlight: #0B6A87;
-  --status-highlight-bg: #EEF7FC;
+  --status-success: #15803D;
+  --status-success-bg: #F0FDF4;
+  --status-warning: #B45309;
+  --status-warning-bg: #FFFBEB;
+  --status-critical: #DC2626;
+  --status-critical-bg: #FEF2F2;
+  --status-highlight: #0284C7;
+  --status-highlight-bg: #F0F9FF;
 }
 
 body {

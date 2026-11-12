@@ -43,7 +43,7 @@ export default function DocumentsPage() {
                 </span>
                 <span className="text-hairline-dark">•</span>
                 <span className="inline-flex items-center gap-1 text-[11px] font-mono px-1.5 py-0.2 rounded bg-semantic-highlight-light text-semantic-highlight border border-semantic-highlight/20">
-                  <Sparkles className="w-2.5 h-2.5" /> DOC-24 DETERMINISTIC
+                  <Sparkles className="w-2.5 h-2.5" /> Vector PDF / SVG
                 </span>
               </div>
             </div>

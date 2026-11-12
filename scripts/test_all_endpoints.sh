@@ -22,11 +22,7 @@ BOLD='\033[1m'
 DIM='\033[2m'
 NC='\033[0m'
 
-echo -e "${BOLD}================================================================================"
-echo -e "🎓 SCHOOLOS PRODUCTION-GRADE FULL-STACK API & SCHEMA VERIFIER"
-echo -e "   Target Architecture: PostgreSQL 16 (RLS) • Go Core API • Next.js 16 Web"
-echo -e "   Auditing Target   : ${CYAN}${TARGET_HOST}${NC}"
-echo -e "================================================================================${NC}"
+echo -e "${BOLD}schoolos api test runner${NC} • target: ${CYAN}${TARGET_HOST}${NC}"
 
 # Check if target server is live; if not, spin up a local instance on 8080
 if ! curl -s "${TARGET_HOST}/healthz" > /dev/null 2>&1; then
@@ -339,21 +335,10 @@ END_TIME=$(date +%s%N)
 TOTAL_DURATION_MS=$(( (END_TIME - START_TIME) / 1000000 ))
 
 # ------------------------------------------------------------------------------
-echo -e "\n${BOLD}================================================================================"
-echo -e "📋 COMPREHENSIVE VERIFICATION BENCHMARK SUMMARY"
-echo -e "================================================================================${NC}"
-echo -e "  Total Tests Executed : ${BOLD}$((PASSED_TESTS + FAILED_TESTS))${NC}"
-echo -e "  Passed Invariants    : ${GREEN}${BOLD}${PASSED_TESTS}${NC}"
-echo -e "  Failed Invariants    : ${RED}${BOLD}${FAILED_TESTS}${NC}"
-echo -e "  Total Execution Time : ${CYAN}${TOTAL_DURATION_MS} ms${NC}"
-echo -e "  API Quality Gate     : ${GREEN}${BOLD}STABLE (100% PRODUCTION READY)${NC}"
-echo -e "================================================================================\n"
+echo -e "\n${BOLD}Test Summary:${NC} ${GREEN}${PASSED_TESTS} passed${NC}, ${RED}${FAILED_TESTS} failed${NC} in ${TOTAL_DURATION_MS} ms"
 
 if [ "${FAILED_TESTS}" -eq 0 ]; then
-    echo -e "${GREEN}${BOLD}🎉 ALL ENDPOINTS, SCHEMAS & BUSINESS INVARIANTS PASSED PERFECTLY.${NC}"
-    echo -e "Show this output to your team or investor — all contracts are verified.\n"
     exit 0
 else
-    echo -e "${RED}${BOLD}❌ VERIFICATION ENCOUNTERED FAILURES.${NC}\n"
     exit 1
 fi

@@ -111,9 +111,9 @@ export default function OMRPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-hairline">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-ink tracking-tight">Computer Vision OMR Grading Copilot</h1>
+            <h1 className="text-xl font-bold text-ink tracking-tight">OMR Sheet Scanner & Grading</h1>
             <span className="bg-pastel-lavender text-pastel-lavender-ink text-[10px] font-semibold px-2 py-0.5 rounded-full border border-transparent">
-              AGENT-29 &lt;1000ms Invariant
+              Fast Processing (&lt;1s)
             </span>
           </div>
           <p className="text-xs text-ink-muted mt-0.5">
@@ -144,7 +144,7 @@ export default function OMRPage() {
           <div className="text-xl font-bold font-mono text-ink mt-2 tabular-nums">
             144 <span className="text-xs font-normal text-ink-faint">ms</span>
           </div>
-          <div className="text-[11px] text-semantic-success font-medium mt-1">Invariant: &lt;1000ms Met</div>
+          <div className="text-[11px] text-semantic-success font-medium mt-1">Latency SLA (&lt;1s) Met</div>
         </div>
 
         <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">

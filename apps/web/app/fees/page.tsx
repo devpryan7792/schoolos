@@ -48,54 +48,54 @@ export default function FeesPage() {
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-hairline">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-black/[0.06]">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-ink tracking-tight">Fee Architecture & Invoicing</h1>
-            <span className="bg-semantic-success-bg text-semantic-success text-[10px] font-semibold px-2 py-0.5 rounded-full border border-semantic-success-border">
-              Double-Entry Invariant Balanced
+            <h1 className="text-xl font-semibold text-neutral-900 tracking-tight">Fee Collection & Invoicing</h1>
+            <span className="bg-emerald-50 text-emerald-700 text-[10px] font-medium px-2 py-0.5 rounded-full border border-emerald-200">
+              Double-Entry Balanced
             </span>
           </div>
-          <p className="text-xs text-ink-muted mt-0.5">
-            Audit-proof general ledger • Sibling concession rule engine • Zero-float arithmetic
+          <p className="text-xs text-neutral-500 mt-1">
+            Student fee receipts, sibling concessions, and automated reconciliation
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <button 
             onClick={() => setIsReceiptModalOpen(true)}
-            className="inline-flex items-center gap-1.5 bg-brand hover:bg-brand-hover text-white text-xs font-medium px-3 py-1.5 rounded-md shadow-whisper transition-all"
+            className="inline-flex items-center gap-1.5 bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-medium px-3.5 py-2 rounded-lg shadow-sm transition-all"
           >
             <Printer className="w-3.5 h-3.5" />
-            Counter POS (F3 Quick Collect)
+            Collect Fee (F3)
           </button>
         </div>
       </div>
 
-      {/* Financial KPI Banner (Personio Metric Tiles) */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-        <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
-          <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">November Gross Demand</div>
-          <div className="text-xl font-bold font-mono text-ink mt-2 tabular-nums">
-            ₹62,45,000<span className="text-xs text-ink-faint font-sans">.00</span>
+      {/* Financial KPI Banner */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white border border-black/[0.06] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="text-xs font-medium text-neutral-500">November Fee Demand</div>
+          <div className="text-2xl font-bold font-mono text-neutral-900 mt-2 tabular-nums">
+            ₹62,45,000<span className="text-xs text-neutral-400 font-sans">.00</span>
           </div>
-          <div className="text-[11px] text-ink-muted mt-1">1,550 Active Student Accounts</div>
+          <div className="text-[11px] text-neutral-500 mt-1">1,550 Active Student Accounts</div>
         </div>
 
-        <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
-          <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">Concessions & Sibling Waivers</div>
-          <div className="text-xl font-bold font-mono text-pastel-lavender-ink mt-2 tabular-nums">
-            ₹4,18,750<span className="text-xs text-ink-faint font-sans">.00</span>
+        <div className="bg-white border border-black/[0.06] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="text-xs font-medium text-neutral-500">Concessions & Sibling Waivers</div>
+          <div className="text-2xl font-bold font-mono text-purple-700 mt-2 tabular-nums">
+            ₹4,18,750<span className="text-xs text-neutral-400 font-sans">.00</span>
           </div>
-          <div className="text-[11px] text-ink-muted mt-1">Automated FAM-03 Rule Hierarchy</div>
+          <div className="text-[11px] text-neutral-500 mt-1">Sibling Discount Policy Applied</div>
         </div>
 
-        <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
-          <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">Net Realized Collection</div>
-          <div className="text-xl font-bold font-mono text-semantic-success mt-2 tabular-nums">
-            ₹48,22,400<span className="text-xs text-ink-faint font-sans">.00</span>
+        <div className="bg-white border border-black/[0.06] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="text-xs font-medium text-neutral-500">Net Realized Collection</div>
+          <div className="text-2xl font-bold font-mono text-emerald-700 mt-2 tabular-nums">
+            ₹48,22,400<span className="text-xs text-neutral-400 font-sans">.00</span>
           </div>
-          <div className="text-[11px] text-semantic-success font-medium mt-1">82.7% Settlement Ratio</div>
+          <div className="text-[11px] text-emerald-700 font-medium mt-1">82.7% Settlement Ratio</div>
         </div>
       </div>
 

@@ -25,12 +25,12 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="h-full flex bg-slate-50 text-slate-900 antialiased overflow-hidden">
+      <body className="h-full flex bg-[#FAF9F7] text-[#191919] antialiased overflow-hidden selection:bg-blue-100">
         {/* Navigation Sidebar */}
         <Sidebar />
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#FAF9F7]">
           <Header onOpenCommandPalette={() => setIsCommandPaletteOpen(true)} />
 
           <main className="flex-1 overflow-y-auto">
