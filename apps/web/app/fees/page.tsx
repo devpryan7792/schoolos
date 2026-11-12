@@ -12,16 +12,38 @@ import {
   Download,
   AlertCircle
 } from 'lucide-react';
+import { collectCashPayment } from '../../lib/api';
 
 export default function FeesPage() {
   const [amountTendered, setAmountTendered] = useState('4000.00');
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
+  const [receiptNumber, setReceiptNumber] = useState('RCP-2026-098234');
+  const [isCollecting, setIsCollecting] = useState(false);
 
   // Exact zero-float financial values
   const grossTotal = 4500.00;
   const siblingDiscount = 625.00; // 25% of Tuition (2,500 * 0.25)
   const netPayable = grossTotal - siblingDiscount; // ₹3,875.00
   const changeDue = Math.max(0, parseFloat(amountTendered || '0') - netPayable);
+
+  const handleCollectPayment = async () => {
+    setIsCollecting(true);
+    try {
+      const res = await collectCashPayment({
+        invoice_id: 'd1a80101-92b5-4b11-9ef0-0a1234567891',
+        student_id: 'd1a80101-92b5-4b11-9ef0-0a1234567891',
+        amount_paid: netPayable,
+        payment_mode: 'CASH',
+        idempotency_key: `pos-${Date.now()}`,
+      });
+      if ((res as any).receipt_number) {
+        setReceiptNumber((res as any).receipt_number);
+      }
+    } finally {
+      setIsCollecting(false);
+      setIsReceiptModalOpen(true);
+    }
+  };
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6">
@@ -209,11 +231,12 @@ export default function FeesPage() {
             </div>
 
             <button 
-              onClick={() => setIsReceiptModalOpen(true)}
-              className="w-full py-2 bg-brand hover:bg-brand-hover text-white text-xs font-medium rounded-md shadow-whisper transition-all flex items-center justify-center gap-2"
+              onClick={handleCollectPayment}
+              disabled={isCollecting}
+              className="w-full py-2 bg-brand hover:bg-brand-hover text-white text-xs font-medium rounded-md shadow-whisper transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <Printer className="w-3.5 h-3.5" />
-              Collect & Print 80mm Receipt
+              {isCollecting ? 'Recording in Double-Entry Ledger...' : 'Collect & Print 80mm Receipt'}
             </button>
           </div>
         </div>
@@ -231,7 +254,7 @@ export default function FeesPage() {
 
             <div className="font-mono text-[11px] space-y-1.5 text-ink">
               <div className="flex justify-between">
-                <span>Receipt: RCP-2026-098234</span>
+                <span>Receipt: {receiptNumber}</span>
                 <span>Date: 08/11/2026</span>
               </div>
               <div className="flex justify-between">

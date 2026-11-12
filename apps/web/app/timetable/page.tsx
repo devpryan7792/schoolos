@@ -10,6 +10,7 @@ import {
   Clock,
   ArrowRight
 } from 'lucide-react';
+import { autoAssignSubstitutions } from '../../lib/api';
 
 interface TimetableSlotDisplay {
   id: string;
@@ -226,7 +227,8 @@ export default function TimetablePage() {
                 Cancel
               </button>
               <button
-                onClick={() => {
+                onClick={async () => {
+                  await autoAssignSubstitutions('tea-rekha-01', 'P2_MON');
                   setHasSubstituted(true);
                   setIsSubstitutionModalOpen(false);
                 }}

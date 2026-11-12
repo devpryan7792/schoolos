@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Users, 
@@ -16,8 +16,30 @@ import {
   Clock,
   Fingerprint
 } from 'lucide-react';
+import { getDashboardStats, DashboardStats } from '../lib/api';
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState<DashboardStats>({
+    fee_collections_today: '₹1,42,500.00',
+    fee_collections_target: '₹1,80,000.00',
+    fee_collections_pct: 79.1,
+    fleet_active_count: 18,
+    fleet_total_count: 22,
+    fleet_status: 'All On Route',
+    staff_clockin_count: 46,
+    staff_total_count: 48,
+    staff_clockin_pct: 95.8,
+    academic_cce_pct: 94.2,
+    double_entry_balanced: true,
+    total_debits: '₹28,45,000.00',
+    total_credits: '₹28,45,000.00',
+    ai_morning_brief: 'Fee collection is on track (79.1% of daily target). Bus 14 is approaching Circular Road Chowk on schedule. Two staff members require punch regularization before 11:00 AM.',
+    is_live: false,
+  });
+
+  useEffect(() => {
+    getDashboardStats().then(setStats);
+  }, []);
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6">
       {/* Executive Welcome Bar (Notion Calm Header) */}
@@ -59,11 +81,16 @@ export default function DashboardPage() {
           <Sparkles className="w-4 h-4 text-[#8C6B1F]" />
         </div>
         <div className="space-y-1">
-          <div className="text-xs font-semibold tracking-tight text-[#5B4B15]">
-            Principal's Autonomous Morning Digest (AGENT-30)
+          <div className="text-xs font-semibold tracking-tight text-[#5B4B15] flex items-center justify-between">
+            <span>Principal&apos;s Autonomous Morning Digest (AGENT-30)</span>
+            {stats.is_live && (
+              <span className="text-[10px] font-mono text-emerald-800 bg-emerald-100/80 px-1.5 py-0.2 rounded">
+                ● Live API Feed
+              </span>
+            )}
           </div>
           <p className="text-xs leading-relaxed text-[#6E5A1C]">
-            All 18 morning bus routes started on schedule with 0 mechanical telemetry drops. Total cash collections reached ₹1,84,500 across 42 reconciled receipts. 1 teacher (Smt. Rekha Verma, Math) reported sick leave; substitution auto-assigned to Sri Alok Nath via Subject Match Optimizer.
+            {stats.ai_morning_brief}
           </p>
         </div>
       </div>
@@ -100,11 +127,11 @@ export default function DashboardPage() {
           </div>
           <div className="mt-2.5">
             <div className="text-xl font-bold text-ink tracking-tight font-mono tabular-nums">
-              ₹1,84,500<span className="text-xs text-ink-faint font-sans">.00</span>
+              {stats.fee_collections_today}
             </div>
             <div className="mt-1 flex items-center gap-1.5 text-xs text-ink-muted">
               <CheckCircle2 className="w-3 h-3 text-semantic-success" />
-              <span className="text-[11px]">42 Receipts Balanced</span>
+              <span className="text-[11px] font-mono">{stats.fee_collections_pct}% of Target ({stats.fee_collections_target})</span>
             </div>
           </div>
         </div>

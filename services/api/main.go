@@ -14,6 +14,26 @@ import (
 	"github.com/schoolos/schoolos/pkg/db"
 )
 
+// CORSMiddleware enables production cross-origin resource sharing for web clients and preflight checks.
+func CORSMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		origin := r.Header.Get("Origin")
+		if origin == "" {
+			origin = "*"
+		}
+		w.Header().Set("Access-Control-Allow-Origin", origin)
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Tenant-ID, X-Tenant-Domain, Accept, Origin")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -70,11 +90,18 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Public healthcheck
+	mux.HandleFunc("/health", server.HealthHandler)
 	mux.HandleFunc("/healthz", server.HealthHandler)
 
-	// API v1 routes
+	// Auth routes
 	mux.HandleFunc("/v1/auth/login/phone", server.LoginHandler)
-	mux.HandleFunc("/v1/students/", server.StudentFeeDuesHandler)
+
+	// Dashboard & Core Domain Endpoints
+	mux.HandleFunc("/v1/dashboard/stats", server.DashboardStatsHandler)
+	mux.HandleFunc("/v1/students", server.StudentsHandler)
+	mux.HandleFunc("/v1/students/", server.StudentsHandler)
+	mux.HandleFunc("/v1/fleet/buses", server.FleetBusesHandler)
+	mux.HandleFunc("/v1/attendance/summary", server.AttendanceSummaryHandler)
 	mux.HandleFunc("/v1/payments/collect-cash", server.CollectCashHandler)
 	mux.HandleFunc("/v1/sync/offline-receipts", server.OfflineReceiptSyncHandler)
 	mux.HandleFunc("/v1/ws/vehicles/", server.WebSocketVehicleFeedHandler)
@@ -125,8 +152,8 @@ func main() {
 	// Tiered Cost-Optimized Notification Dispatcher (NOTIF-27)
 	mux.HandleFunc("/v1/notifications/dispatch", server.NotificationDispatchHandler)
 
-	// Wrap in RLS Tenant Middleware
-	handler := db.HTTPTenantMiddleware(nil)(mux)
+	// Wrap in RLS Tenant Middleware and CORS
+	handler := CORSMiddleware(db.HTTPTenantMiddleware(nil)(mux))
 
 	httpServer := &http.Server{
 		Addr:         ":" + port,

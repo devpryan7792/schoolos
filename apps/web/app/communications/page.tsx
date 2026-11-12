@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   ChevronRight
 } from 'lucide-react';
+import { dispatchNotification } from '../../lib/api';
 
 interface DunningStudent {
   id: string;
@@ -98,18 +99,27 @@ export default function CommunicationsPage() {
   const [isSimulatingDispatch, setIsSimulatingDispatch] = useState(false);
   const [dispatchResult, setDispatchResult] = useState<string | null>(null);
 
-  const handleSimulateDispatch = () => {
+  const handleSimulateDispatch = async () => {
     setIsSimulatingDispatch(true);
     setDispatchResult(null);
 
-    setTimeout(() => {
-      setIsSimulatingDispatch(false);
+    try {
+      const res = await dispatchNotification({
+        student_id: selectedStudent.id,
+        recipient_phone: selectedStudent.guardianPhone,
+        amount_due: selectedStudent.amountDue,
+        tier: selectedStudent.pushToken ? 'TIER_1_PUSH' : 'TIER_2_WHATSAPP',
+        has_app: selectedStudent.hasApp,
+      });
+
       if (selectedStudent.pushToken) {
-        setDispatchResult('Dispatched via Tier 1 Native Push (Cost: ₹0.00 • Saved ₹0.15)');
+        setDispatchResult(`Dispatched via Tier 1 Native Push (Cost: ${res.cost || '₹0.00'} • Saved ₹0.15)`);
       } else {
-        setDispatchResult('Dispatched via Tier 2 WhatsApp Interactive (Cost: ₹0.40 • Meta Cloud Delivery OK)');
+        setDispatchResult(`Dispatched via Tier 2 WhatsApp Interactive (Cost: ${res.cost || '₹0.40'} • Meta Cloud Delivery OK)`);
       }
-    }, 450);
+    } finally {
+      setIsSimulatingDispatch(false);
+    }
   };
 
   return (

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   Search, 
@@ -18,6 +18,7 @@ import {
   Clock,
   AlertCircle
 } from 'lucide-react';
+import { getStudents } from '../../lib/api';
 
 interface StudentRecord {
   id: string;
@@ -109,10 +110,37 @@ const mockStudents: StudentRecord[] = [
 ];
 
 export default function StudentsPage() {
+  const [students, setStudents] = useState<StudentRecord[]>(mockStudents);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStudent, setSelectedStudent] = useState<StudentRecord | null>(null);
+  const [isLiveSync, setIsLiveSync] = useState(false);
 
-  const filtered = mockStudents.filter(s => 
+  useEffect(() => {
+    getStudents().then(({ students: apiStudents, isLive }) => {
+      if (apiStudents && apiStudents.length > 0) {
+        setStudents(apiStudents.map((s, idx) => ({
+          id: s.id || `std-${idx}`,
+          admissionNo: s.admission_no,
+          name: s.name,
+          cbsePen: s.cbse_pen,
+          stateRollCode: s.roll_no,
+          className: s.class_name,
+          section: s.section,
+          guardianName: s.guardian_name,
+          guardianPhone: s.guardian_phone,
+          siblingBirthOrder: 1,
+          siblings: [s.sibling_concession],
+          transportRoute: s.bus_route,
+          feeStatus: s.fee_status === 'PAID' ? 'PAID' : s.fee_status === 'OVERDUE' ? 'OVERDUE' : 'DUE_SOON',
+          feeBalance: typeof s.fee_dues_amount === 'number' ? `₹${s.fee_dues_amount.toFixed(2)}` : `₹${s.fee_dues_amount}`,
+          attendanceStatus: 'PRESENT',
+        })));
+        setIsLiveSync(isLive);
+      }
+    });
+  }, []);
+
+  const filtered = students.filter(s => 
     s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.admissionNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.guardianPhone.includes(searchQuery)
@@ -123,7 +151,14 @@ export default function StudentsPage() {
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-hairline">
         <div>
-          <h1 className="text-xl font-bold text-ink tracking-tight">Student Information Register (SIS)</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-ink tracking-tight">Student Information Register (SIS)</h1>
+            {isLiveSync && (
+              <span className="text-[10px] font-mono text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded border border-emerald-300">
+                ● PostgreSQL Live Sync
+              </span>
+            )}
+          </div>
           <p className="text-xs text-ink-muted mt-0.5">
             1,550 enrolled students • CBSE Affiliation No. 3430012 • RLS Multi-Tenant Isolated
           </p>

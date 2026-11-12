@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Fingerprint, 
   Users, 
@@ -8,9 +8,25 @@ import {
   Clock, 
   Send
 } from 'lucide-react';
+import { getAttendanceSummary, AttendanceSummary } from '../../lib/api';
 
 export default function AttendancePage() {
   const [selectedClass, setSelectedClass] = useState('Class 5-A');
+  const [summary, setSummary] = useState<AttendanceSummary>({
+    date: '2026-11-12',
+    total_students: 1240,
+    present: 1182,
+    absent: 42,
+    late: 16,
+    attendance_pct: 95.3,
+    staff_total: 48,
+    staff_present: 46,
+    biometric_punches_today: 94,
+  });
+
+  useEffect(() => {
+    getAttendanceSummary().then(setSummary);
+  }, []);
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6">
@@ -41,15 +57,15 @@ export default function AttendancePage() {
         <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
           <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">Total Present</div>
           <div className="text-xl font-bold text-ink mt-2 tabular-nums">
-            1,482 <span className="text-xs font-normal text-ink-faint">/ 1,550</span>
+            {summary.present} <span className="text-xs font-normal text-ink-faint">/ {summary.total_students}</span>
           </div>
-          <div className="text-[11px] text-semantic-success font-medium mt-1">95.6% Daily Turnout</div>
+          <div className="text-[11px] text-semantic-success font-medium mt-1">{summary.attendance_pct}% Daily Turnout</div>
         </div>
 
         <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
           <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">Total Absent</div>
           <div className="text-xl font-bold text-semantic-critical mt-2 tabular-nums">
-            48 <span className="text-xs font-normal text-ink-faint">Students</span>
+            {summary.absent} <span className="text-xs font-normal text-ink-faint">Students</span>
           </div>
           <div className="text-[11px] text-semantic-critical font-medium mt-1">Absence Alerts Ready</div>
         </div>
@@ -57,7 +73,7 @@ export default function AttendancePage() {
         <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
           <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">Gate Late Arrivals</div>
           <div className="text-xl font-bold text-semantic-warning mt-2 tabular-nums">
-            20 <span className="text-xs font-normal text-ink-faint">Logged</span>
+            {summary.late} <span className="text-xs font-normal text-ink-faint">Logged</span>
           </div>
           <div className="text-[11px] text-semantic-warning font-medium mt-1">After 08:00 AM cutoff</div>
         </div>
@@ -65,9 +81,9 @@ export default function AttendancePage() {
         <div className="bg-canvas border border-hairline rounded-lg p-4 shadow-tile">
           <div className="text-[11px] font-semibold text-ink-faint uppercase tracking-utility">Staff Biometrics</div>
           <div className="text-xl font-bold text-ink mt-2 tabular-nums">
-            78 <span className="text-xs font-normal text-ink-faint">/ 82</span>
+            {summary.staff_present} <span className="text-xs font-normal text-ink-faint">/ {summary.staff_total}</span>
           </div>
-          <div className="text-[11px] text-ink-muted mt-1">4 Shifts Active</div>
+          <div className="text-[11px] text-ink-muted mt-1 font-mono">{summary.biometric_punches_today} ADMS Punches Today</div>
         </div>
       </div>
 

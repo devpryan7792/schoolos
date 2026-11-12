@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Search, ChevronDown, Check, Building2, UserCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, ChevronDown, Check, Building2, UserCircle2, Activity } from 'lucide-react';
+import { API_BASE_URL } from '../lib/api';
 
 interface HeaderProps {
   onOpenCommandPalette: () => void;
@@ -15,6 +16,25 @@ const mockSiblings = [
 export default function Header({ onOpenCommandPalette }: HeaderProps) {
   const [selectedProfile, setSelectedProfile] = useState(mockSiblings[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isApiLive, setIsApiLive] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const checkApi = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/healthz`, { method: 'GET', signal: AbortSignal.timeout(2000) });
+        if (isMounted) setIsApiLive(res.ok);
+      } catch {
+        if (isMounted) setIsApiLive(false);
+      }
+    };
+    checkApi();
+    const interval = setInterval(checkApi, 10000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <header className="h-14 border-b border-hairline bg-canvas px-5 flex items-center justify-between sticky top-0 z-30 select-none">
@@ -40,8 +60,18 @@ export default function Header({ onOpenCommandPalette }: HeaderProps) {
         </div>
       </div>
 
-      {/* Right Actions: Sibling Context Switcher & Operator Badge */}
+      {/* Right Actions: API Engine Status, Sibling Context Switcher & Operator Badge */}
       <div className="flex items-center gap-2.5">
+        {/* Real-time Go API Connection Indicator */}
+        <div className={`hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-mono border ${
+          isApiLive
+            ? 'bg-semantic-success-light text-semantic-success border-semantic-success/20'
+            : 'bg-canvas-subtle text-ink-muted border-hairline'
+        }`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${isApiLive ? 'bg-semantic-success animate-pulse' : 'bg-ink-faint'}`} />
+          <span>{isApiLive ? 'API :8080 LIVE' : 'API STANDBY'}</span>
+        </div>
+
         {/* Multi-Account / Sibling Switcher (FAM-03) */}
         <div className="relative">
           <button

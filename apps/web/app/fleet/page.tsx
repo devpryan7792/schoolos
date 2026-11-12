@@ -14,6 +14,7 @@ import {
   Phone,
   Navigation
 } from 'lucide-react';
+import { getFleetBuses } from '../../lib/api';
 
 interface FleetBus {
   id: string;
@@ -98,6 +99,31 @@ export default function FleetPage() {
   const selectedBus = buses.find(b => b.id === selectedBusId) || buses[0];
 
   useEffect(() => {
+    getFleetBuses().then(({ buses: apiBuses, isLive }) => {
+      if (apiBuses && apiBuses.length > 0) {
+        setBuses(apiBuses.map(b => ({
+          id: b.id,
+          vehicleId: b.vehicle_id,
+          registrationNumber: b.registration_number,
+          routeName: b.route_name,
+          driverName: b.driver_name,
+          driverPhone: b.driver_phone,
+          lat: b.lat,
+          lng: b.lng,
+          speedKmh: b.speed_kmh,
+          heading: b.heading,
+          ignitionOn: b.ignition_on,
+          passengers: b.passengers,
+          nextStop: b.next_stop,
+          etaMinutes: b.eta_minutes,
+          status: b.status,
+        })));
+        setIsConnected(isLive);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     if (!mapContainer.current || mapRef.current) return;
 
     try {
@@ -152,7 +178,7 @@ export default function FleetPage() {
     }
 
     return () => {
-      map.remove();
+      mapRef.current?.remove();
       mapRef.current = null;
     };
   }, []);
